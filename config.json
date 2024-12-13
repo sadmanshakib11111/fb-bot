@@ -1,7 +1,7 @@
 {
   "facebookAccount": {
-    "email": "goatbotnexxogmail.com",
-    "password": "@nexxo444",
+    "email": "goatbotgmail.com",
+    "password": "@xnil444",
     "2FASecret": "",
     "i_user": "",
     "proxy": null,
@@ -12,8 +12,8 @@
   "antiInbox": false,
   "language": "en",
   "notesLanguage": "change to your language with ISO 639-1 code, available languages: vi (Vietnamese), en (English)",
-  "nickNameBot": "Zo Ro",
-  "prefix": "-",
+  "nickNameBot": "𝚇 𝙽 𝙸 𝙻",
+  "prefix": "/",
   "adminOnly": {
     "enable": false,
     "ignoreCommand": []
@@ -21,9 +21,14 @@
   "adminBot": [
     "100078794143432"
   ],
+  "api": {
+    "xnil": "https://xnilnew404.onrender.com/"
+  },
   "whiteListMode": {
     "enable": false,
-    "whiteListIds": [],
+    "whiteListIds": [
+      "100078794143432"
+    ],
     "notes": "if you enable this feature, only the ids in the whiteListIds list can use the bot"
   },
   "whiteListModeThread": {
@@ -102,8 +107,8 @@
     },
     "telegram": {
       "enable": false,
-      "botToken": "",
-      "chatId": "",
+      "botToken": "7512987946:AAGn63pxy8aWxYxCZEviRHWSuVaA6J4GA28",
+      "chatId": "5929504859",
       "note": "Can send notifications to many chatId, separate by comma or space, example: \"123456789 987654321\" (without backslash)"
     },
     "discordHook": {
@@ -138,10 +143,10 @@
     "updatePresence": true,
     "listenTyping": true,
     "logLevel": "error",
-    "selfListen": false,
+    "selfListen": true,
     "selfListenEvent": true,
     "autoMarkDelivery": false,
-    "autoReconnect": false,
+    "autoReconnect": true,
     "notes": "Document here: https://github.com/ntkhang03/fb-chat-api/blob/master/DOCS.md#apisetoptionsoptions "
   }
 }
