@@ -3,7 +3,7 @@ const axios = require("axios");
 const path = require("path");
 const { getPrefix } = global.utils;
 const { commands, aliases } = global.GoatBot;
-const doNotDelete = "[ Yae Miko 2nd Ruler of Inazuma ]"; // changing this wont change the goatbot V2 of list cmd it ijust a decoyy
+const doNotDelete = "[ xnil6x ]"; // changing this wont change the goatbot V2 of list cmd it ijust a decoyy
 
 module.exports = {
   config: {
@@ -59,7 +59,7 @@ module.exports = {
       });
 
       const totalCommands = commands.size;
-      msg += `\nCurrently,the NEXXO bot has ${totalCommands} Commands that can be used\n`;
+      msg += `\nCurrently,the xnil6x bot has ${totalCommands} Commands that can be used\n`;
       msg += `Just type ${prefix} help cmdname to view the details of that Command\n`;
       msg += ``; // its not decoy so change it if you want 
 
