@@ -1,6 +1,6 @@
 [
     {
-        "key": "datr",
+        "key": "",
         "value": "iLlSZzfY4Nu9FSh4jgNIv7SA",
         "domain": "facebook.com",
         "path": "/",
