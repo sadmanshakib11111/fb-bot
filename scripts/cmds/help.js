@@ -59,7 +59,7 @@ module.exports = {
       });
 
       const totalCommands = commands.size;
-      msg += `\nCurrently,the xnil6x bot has ${totalCommands} Commands that can be used\n`;
+      msg += `\nCurrently,the Ru bot💫 has ${totalCommands} Commands that can be used\n`;
       msg += `Just type ${prefix} help cmdname to view the details of that Command\n`;
       msg += ``; // its not decoy so change it if you want 
 
