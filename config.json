@@ -59,11 +59,11 @@
   "timeZone": "Asia/Dhaka",
   "credentials": {
     "gmailAccount": {
-      "email": "neoaz69x@gmail.com",
-      "clientId": "174744836003-5um5f2t77dh7fke482juut6rlkmdg8vr.apps.googleusercontent.com",
-      "clientSecret": "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",
-      "refreshToken": "1//04U5OBRRhnu0ICgYIARAAGAQSNwF-L9Ir9PD-m7XnKN8T8SCN9lJ0Hzs6kZRyo4Sy5ek143HlpUP8CPoVQFuP3QSpAY2LsCBBnOc",
-      "apiKey": ""
+      "email": "itsehan208@gmail.com",
+      "clientId": "1021502973839-dargpljmbn9jtspsv9odndf3ehjkpghm.apps.googleusercontent.com",
+      "clientSecret": "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",
+      "refreshToken": "1//04an7sEWacfFbCgYIARAAGAQSNwF-L9IrSMcYxNsUH4oEQ-g1qmFCqWcLmKABoD5X3VGpdJFR_ADSuhnd_e_vAMOFnOBYzuG21R4",
+      "apiKey": "AIzaSyC7TCAtIV8M_Zrm8YiCOwPcTFtPluYSv3w"
     },
     "gRecaptcha": {
       "siteKey": "6Ldu4R0qAAAAAJrUKnTYx1AaUtVIUCtye1UE_ohw",
