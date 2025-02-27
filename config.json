@@ -30,14 +30,15 @@
   
   "adminBot": [
     "100033670741301",
-    "100024056383922"
+    "100024056383922",
+    "61571904047861"
   ],
   "api": {
     "xnil": "https://xnilnew404.onrender.com/",
     "dipto": "https://rest-api-zegp.onrender.com/"
   },
   "whiteListMode": {
-    "enable": true,
+    "enable": false,
     "whiteListIds": [
       "100033670741301"
     ],
