@@ -1,8 +1,6 @@
 module.exports = {
 	config: {
-		name: "gali",
-    alias: " cuda","chur",
-  
+		name: "murgi2",
 		version: "1.0",
 		author: "Xemon",
 		role: 2,
