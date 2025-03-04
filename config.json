@@ -37,7 +37,7 @@
     "dipto": "https://rest-api-zegp.onrender.com/"
   },
   "whiteListMode": {
-    "enable": false,
+    "enable": true,
     "whiteListIds": [
       "100033670741301"
     ],
