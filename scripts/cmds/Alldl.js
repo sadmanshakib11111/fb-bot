@@ -2,7 +2,7 @@ const axios = require("axios");
 const fs = require("fs-extra");
 const baseApiUrl = async () => {
   const base = await axios.get(
-    `https://raw.githubusercontent.com/Blankid018/D1PT0/main/baseApiUrl.json`,
+    `https://www.noobz-api.rf.gd`,
   );
   return base.data.api;
 };
@@ -29,7 +29,7 @@ module.exports = {
     }
     try {
       api.setMessageReaction("⏳", event.messageID, (err) => {}, true);
-      const { data } = await axios.get(`${await baseApiUrl()}/alldl?url=${encodeURIComponent(dipto)}`);
+      const { data } = await axios.get(`${await baseApiUrl()}api/alldl?url=${encodeURIComponent(dipto)}`);
       const filePath = __dirname + `/cache/vid.mp4`;
       if(!fs.existsSync(filePath)){
         fs.mkdir(__dirname + '/cache');
@@ -56,7 +56,7 @@ module.exports = {
         const filename = __dirname + `/cache/dipto${dipto3}`;
         fs.writeFileSync(filename, Buffer.from(response.data, "binary"));
         api.sendMessage({
-            body: `✅ | Downloaded from link`,
+            body: `✅ | Downloaded from link `,
             attachment: fs.createReadStream(filename),
           },
           event.threadID,
