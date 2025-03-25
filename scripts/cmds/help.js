@@ -34,7 +34,7 @@ module.exports = {
       const categories = {};
       let msg = "";
 
-      msg += `     NEXXO AI ☠️ \n`; // replace with your name 
+      msg += `     \n`; // replace with your name 
 
       for (const [name, value] of commands) {
         if (value.config.role > 1 && role < value.config.role) continue;
@@ -59,8 +59,8 @@ module.exports = {
       });
 
       const totalCommands = commands.size;
-      msg += `\nCurrently,the Ru bot💫 has ${totalCommands} Commands that can be used\n`;
-      msg += `Just type ${prefix} help cmdname to view the details of that Command\n`;
+      msg += `\nCurrently,the Ru bot💫 has ${totalCommands} Commands 🔰 \n 
+ Admin: Rana Babu \n`;
       msg += ``; // its not decoy so change it if you want 
 
       await message.reply(msg);

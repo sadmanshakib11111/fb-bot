@@ -1,4 +1,5 @@
 const axios = require("axios");
+const { GoatWrapper } = require("fca-liane-utils");
 const { execSync } = require("child_process");
 const fs = require("fs-extra");
 const path = require("path");
@@ -27,6 +28,7 @@ function isURL(str) {
 module.exports = {
 	config: {
 		name: "cmd",
+		aliases: ["Cmd", "cmnd"],
 		version: "1.17",
 		author: "NTKhang",
 		countDown: 5,
@@ -529,3 +531,7 @@ function unloadScripts(folder, fileName, configCommands, getLang) {
 
 global.utils.loadScripts = loadScripts;
 global.utils.unloadScripts = unloadScripts;
+
+
+const wrapper = new GoatWrapper(module.exports);
+wrapper.applyNoPrefix({ allowPrefix: true });

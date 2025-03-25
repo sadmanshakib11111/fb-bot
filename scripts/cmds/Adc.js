@@ -1,136 +1,128 @@
-const fs = require("fs-extra");
-const axios = require("axios");
-const request = require("request");
-const cheerio = require("cheerio");
-const { PasteClient } = require("pastebin-api");
-
+const { GoatWrapper } = require("fca-liane-utils");
 module.exports = {
   config: {
     name: "adc",
-    version: "1.1",
-    author: "NIB",
+    aliases: ["adc"],
+    version: "1.2",
+    author: "Loid Butter",
+    usePrefix: false,
     countDown: 5,
-    role: 0,
+    role: 2,
     shortDescription: {
       vi: "",
-      en: "Apply code from buildtooldev and pastebin",
+      en: "adc command"
     },
     longDescription: {
       vi: "",
-      en: "This command applies code from buildtooldev and pastebin",
+      en: "only bot owner"
     },
     category: "owner",
-    guide: "Reply to a link or provide a text",
-    dependencies: {
-      "pastebin-api": "",
-      "cheerio": "",
-      "request": "",
-      "axios": "",
-    },
+    guide: {
+      en: "{pn}"
+    }
   },
 
-  onStart: async function ({
-    event,
-    message,
-    getLang,
-    usersData,
-    api,
-    args,
-  }) {
-    const a = args.join(" ");
-    const permission = global.GoatBot.config.DEV;
-    if (!permission.includes(event.senderID))
-      return api.sendMessage(a, event.threadID, event.messageID);
-
-    const { senderID, threadID, messageID, messageReply, type } = event;
-    var name = args[0];
-    if (type == "message_reply") {
-      var text = messageReply.body;
-    }
-    if (!text && !name)
+  onStart: async function ({ api, event, args }) {
+    // Safeguard for DEV configuration
+    const permission = global.GoatBot.config.adminBot || []; // Default to an empty array if undefined
+    if (!permission.includes(event.senderID)) {
       return api.sendMessage(
-        "Please reply to the link you want to apply the code to or write the file name to upload the code to pastebin!",
+        "❌ | You aren't allowed to use this command. Check the ADC command.",
+        event.threadID,
+        event.messageID
+      );
+    }
+
+    const axios = require("axios");
+    const fs = require("fs");
+    const request = require("request");
+    const cheerio = require("cheerio");
+    const { resolve } = require("path");
+    const { senderID, threadID, messageID, messageReply, type } = event;
+
+    let name = args[0];
+    let text = type === "message_reply" ? messageReply.body : null;
+
+    if (!text && !name) {
+      return api.sendMessage(
+        "Please reply to the link you want to apply the code to or write the file name to upload the code to Pastebin!",
         threadID,
         messageID
       );
+    }
 
-    // Upload file to Pastebin
     if (!text && name) {
-      fs.readFile(`${__dirname}/${args[0]}.js`, "utf-8", async (err, data) => {
-        if (err)
+      const filePath = `${__dirname}/${args[0]}.js`;
+      fs.readFile(filePath, "utf-8", async (err, data) => {
+        if (err) {
+          console.log(`File not found: ${args[0]}.js`);
           return api.sendMessage(
             `Command ${args[0]} does not exist!`,
             threadID,
             messageID
           );
+        }
 
-        const client = new PasteClient("ZXkfZgcEonOOu7EQQwy7pvmjfN5n1-Dy");
+        const { PasteClient } = require("pastebin-api");
+        const client = new PasteClient("N5NL5MiwHU6EbQxsGtqy7iaodOcHithV");
 
-        async function pastepin(name) {
+        async function pastebin(name) {
           const url = await client.createPaste({
             code: data,
             expireDate: "N",
             format: "javascript",
             name: name,
-            publicity: 1,
+            publicity: 1
           });
-          var id = url.split("/")[3];
-          return "https://pastebin.com/raw/" + id;
+          const id = url.split("/")[3];
+          return `https://pastebin.com/raw/${id}`;
         }
 
-        var link = await pastepin(args[1] || "noname");
+        const link = await pastebin(args[1] || "noname");
         return api.sendMessage(link, threadID, messageID);
       });
       return;
     }
 
-    var urlR = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/
-    var url = text.match(urlR);
-    if (url[0].indexOf('pastebin') !== -1) {
-        axios.get(url[0]).then(i => {
-            var data = i.data
-            fs.writeFile(
-                `${__dirname}/${args[0]}.js`,
-                data,
-                "utf-8",
-                function (err) {
-                    if (err) return api.sendMessage(`An error occurred while applying the code ${args[0]}.js`, threadID, messageID);
-                    api.sendMessage(`Applied the code to ${args[0]}.js, use command load to use!`, threadID, messageID);
-                }
-            );
-        })
-    } 
-    if (url[0].indexOf('buildtool') !== -1 || url[0].indexOf('tinyurl.com') !== -1) {
-        const options = {
-            method: 'GET',
-            url: messageReply.body
-        };
-        request(options, function (error, response, body) {
-            if (error) return api.sendMessage('Please only reply to the link (doesnt contain anything other than the link)', threadID, messageID);
-            const load = cheerio.load(body);
-            load('.language-js').each((index, el) => {
-                if (index !== 0) return;
-                var code = el.children[0].data
-                fs.writeFile(`${__dirname}/${args[0]}.js`, code, "utf-8",
-                    function (err) {
-                        if (err) return api.sendMessage(`An error occurred while applying the new code to "${args[0]}.js".`, threadID, messageID);
-                        return api.sendMessage(`Added this code "${args[0]}.js", use command load to use!`, threadID, messageID);
-                    }
-                );
-            });
-        });
-        return
-    }
-    if (url[0].indexOf('drive.google') !== -1) {
-      var id = url[0].match(/[-\w]{25,}/)
-      const path = resolve(__dirname, `${args[0]}.js`);
+    // Handle URL cases
+    const urlR = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/;
+    const url = text.match(urlR);
+
+    if (url && url[0].indexOf("pastebin") !== -1) {
       try {
-        await utils.downloadFile(`https://drive.google.com/u/0/uc?id=${id}&export=download`, path);
-        return api.sendMessage(`Added this code "${args[0]}.js" If there is an error, change the drive file to txt!`, threadID, messageID);
-      }
-      catch(e) {
-        return api.sendMessage(`An error occurred while applying the new code to "${args[0]}.js".`, threadID, messageID);
+        const response = await axios.get(url[0], {
+          headers: {
+            "User-Agent":
+              "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
+          }
+        });
+
+        fs.writeFile(`${__dirname}/${args[0]}.js`, response.data, "utf-8", (err) => {
+          if (err) {
+            console.log(`Error writing file: ${args[0]}.js`);
+            return api.sendMessage(
+              `An error occurred while applying the code ${args[0]}.js`,
+              threadID,
+              messageID
+            );
+          }
+          api.sendMessage(
+            `Applied the code to ${args[0]}.js, use command load to use!`,
+            threadID,
+            messageID
+          );
+        });
+      } catch (error) {
+        console.log(`Error fetching Pastebin code: ${error.message}`);
+        return api.sendMessage(
+          `An error occurred while fetching the pastebin code. Error: ${error.message}`,
+          threadID,
+          messageID
+        );
       }
     }
-  },
+  }
 };
+
+const wrapper = new GoatWrapper(module.exports);
+wrapper.applyNoPrefix({ allowPrefix: true });

@@ -26,11 +26,12 @@
     "ASIF": "https://nubs-apis.onrender.com",
     "rubishapi": "https://rubish-apihub.onrender.com/rubish"
   },
-  
   "adminBot": [
     "100033670741301",
     "100024056383922",
-    "61571904047861"
+    "61571904047861",
+    "100083520680035",
+    "61558770698002"
   ],
   "api": {
     "xnil": "https://xnilnew404.onrender.com/",
@@ -39,13 +40,19 @@
   "whiteListMode": {
     "enable": true,
     "whiteListIds": [
-      "100033670741301"
+      "100033670741301",
+      "100002435314153",
+      "100071457007723"
     ],
     "notes": "if you enable this feature, only the ids in the whiteListIds list can use the bot"
   },
   "whiteListModeThread": {
-    "enable": false,
-    "whiteListThreadIds": [],
+    "enable": true,
+    "whiteListThreadIds": [
+      "8892127300892688",
+      "7463168130426511",
+      "9235414349857298"
+    ],
     "notes": "if you enable this feature, only the thread in the whiteListThreadIds list can use the bot",
     "how_it_work": "if you enable both whiteListMode and whiteListModeThread, the system will check if the user is in whiteListIds, then check if the thread is in whiteListThreadIds, if one of the conditions is true, the user can use the bot"
   },
@@ -73,11 +80,11 @@
   "dashBoard": {
     "enable": true,
     "expireVerifyCode": 300000,
-    "port": 3001
+    "port": 4000
   },
   "serverUptime": {
     "enable": false,
-    "port": 3001,
+    "port": 4000,
     "socket": {
       "enable": true,
       "channelName": "uptime",

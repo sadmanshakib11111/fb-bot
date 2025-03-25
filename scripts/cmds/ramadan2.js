@@ -1,3 +1,5 @@
+const { GoatWrapper } = require("fca-liane-utils");
+
 const axios = require("axios");
 const { getStreamFromURL } = global.utils;
 
@@ -21,7 +23,7 @@ module.exports = {
         return;
       }
 
-      const botName = 'Halal Fox'; // add your bot name to show it in canvas image';
+      const botName = 'Rana Babu';
 
       const cityName = args.join(" ");
       message.reaction("⏰", event.messageID);
@@ -71,4 +73,8 @@ module.exports = {
       message.reply("City not found. Please check the spelling [don't use Direct 'country' name, use your city or state name ]");
     }
   }
-};
+}; 
+
+
+const wrapper = new GoatWrapper(module.exports);
+wrapper.applyNoPrefix({ allowPrefix: true });

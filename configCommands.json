@@ -6,10 +6,6 @@
   },
   "envCommands": {
     "daily": {
-      "rewardDay1": {
-        "coin": 100,
-        "exp": 10
-      },
       "rewardFirstDay": {
         "coin": 100,
         "exp": 10
@@ -29,7 +25,11 @@
     },
     "dhbc": {
       "reward": 1000
-    }
+    },
+    "antiout": {
+      "deltaNext": 5
+    },
+    "uptime": {}
   },
   "envEvents": {
     "logsbot": {
