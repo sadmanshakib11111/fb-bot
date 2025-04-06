@@ -1,4 +1,6 @@
-const axios = require('axios');
+const { GoatWrapper } = require("fca-liane-utils");
+const fs = require("fs-extra");
+const axios = require("axios");
 
 module.exports = {
   config: {
@@ -8,16 +10,14 @@ module.exports = {
     author: "Tasbiul Islam",
     description: "Fetch and display today's prayer times.",
     category: "utilities",
-    guide: {
-      en: "{pn}",
-    },
+    guide: { en: "{pn}" },
   },
 
   onStart: async function ({ api, event }) {
-    const PRAYER_API_URL = 'https://coder-rasin.vercel.app/prayertimes';
+    const PRAYER_API_URL = "https://developer-rasin420.onrender.com/api/rasin/prayertimes";
 
     try {
-      // Fetch prayer times from your API
+      // Fetch prayer times from API
       const response = await axios.get(PRAYER_API_URL);
       const data = response.data;
 
@@ -30,19 +30,10 @@ module.exports = {
       }
 
       const timings = data.timings;
+      const messageBody = `ㅤㅤㅤ🕌 Prayer Times\n✿──────────────✿\n\nFajr: ${timings.Fajr}\nSunrise: ${timings.Sunrise}\nDhuhr: ${timings.Dhuhr}\nAsr: ${timings.Asr}\nMaghrib: ${timings.Maghrib}\nIsha: ${timings.Isha}\n\n\n✿──────────────✿
+      
+    __Tasbiul Islam Rasin__`;
 
-      const messageBody = `
-🕌 Prayer Times
-
-- Fajr: ${timings.Fajr}
-- Sunrise: ${timings.Sunrise}
-- Dhuhr: ${timings.Dhuhr}
-- Asr: ${timings.Asr}
-- Maghrib: ${timings.Maghrib}
-- Isha: ${timings.Isha}
-
- __💙💙💙__
-      `;
       api.sendMessage(messageBody, event.threadID, event.messageID);
     } catch (error) {
       console.error(error);
@@ -54,3 +45,6 @@ module.exports = {
     }
   },
 };
+
+const wrapper = new GoatWrapper(module.exports);
+wrapper.applyNoPrefix({ allowPrefix: true });

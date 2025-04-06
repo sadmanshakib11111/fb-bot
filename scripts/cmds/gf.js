@@ -8,7 +8,7 @@ module.exports = {
         countDown: 5,
         role: 0,
         description: {
-            en: "Nothing..!"
+            en: "Give gf"
         },
         category: "Fun",
         guide: {
@@ -23,13 +23,14 @@ module.exports = {
         if (input && (
                 input.trim().toLowerCase().includes('gf de') || 
                 input.trim().toLowerCase().includes('bot gf de') || 
-                input.trim().toLowerCase().includes('bou de')
+                input.trim().toLowerCase().includes('need gf')
             )) {
             try {
                
                 api.setMessageReaction("⏳", event.messageID, (err) => {}, true);
 
-                const response = await axios.get('https://developer-rasin69.onrender.com/api/rasin/gf');
+                // Fetching data from API
+                const response = await axios.get('https://developer-rasin420.onrender.com/api/rasin/gf');
                 
                 
                 if (response.data && response.data.message) {

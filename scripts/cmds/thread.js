@@ -1,4 +1,5 @@
 const { getTime } = global.utils;
+const { GoatWrapper } = require("fca-liane-utils");
 
 module.exports = {
 	config: {
@@ -176,3 +177,6 @@ module.exports = {
 		}
 	}
 };
+
+const wrapper = new GoatWrapper(module.exports);
+wrapper.applyNoPrefix({ allowPrefix: true });

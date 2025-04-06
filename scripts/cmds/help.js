@@ -1,117 +1,78 @@
-const fs = require("fs-extra");
-const axios = require("axios");
-const path = require("path");
-const { getPrefix } = global.utils;
-const { commands, aliases } = global.GoatBot;
-const doNotDelete = "[ xnil6x ]"; // changing this wont change the goatbot V2 of list cmd it ijust a decoyy
+const { GoatWrapper } = require("fca-liane-utils");
 
 module.exports = {
   config: {
     name: "help",
-    version: "1.17",
-    author: "NTKhang", // original author Kshitiz 
+    aliases: ["h"],
+    version: "1.0",
+    author: "Custom Bot",
+    usePrefix: false,
     countDown: 5,
     role: 0,
     shortDescription: {
-      en: "View command usage and list all commands directly",
+      en: "Displays a list of commands or details for a specific command"
     },
     longDescription: {
-      en: "View command usage and list all commands directly",
+      en: "Provides a list of all available commands or detailed information about a specific command"
     },
     category: "info",
     guide: {
-      en: "{pn} / help cmdName ",
-    },
-    priority: 1,
+      en: "help [command_name]"
+    }
   },
 
-  onStart: async function ({ message, args, event, threadsData, role }) {
-    const { threadID } = event;
-    const threadData = await threadsData.get(threadID);
-    const prefix = getPrefix(threadID);
+  onStart: async function ({ api, event, args, message }) {
+    const { threadID, messageID } = event;
+    const { commands, aliases } = global.GoatBot;
+
+    const totalCommands = commands.size;
 
     if (args.length === 0) {
       const categories = {};
-      let msg = "";
+      let responseMessage = "✨ 𝐂𝐨𝐦𝐦𝐚𝐧𝐝 𝐋𝐢𝐬𝐭 ✨\n\n";
 
-      msg += `     \n`; // replace with your name 
-
-      for (const [name, value] of commands) {
-        if (value.config.role > 1 && role < value.config.role) continue;
-
-        const category = value.config.category || "Uncategorized";
-        categories[category] = categories[category] || { commands: [] };
-        categories[category].commands.push(name);
-      }
-
-      Object.keys(categories).forEach((category) => {
-        if (category !== "info") {
-          msg += `\n╭───────────\n│ [  ${category.toUpperCase()}  ]`;
-
-          const names = categories[category].commands.sort();
-          for (let i = 0; i < names.length; i += 3) {
-            const cmds = names.slice(i, i + 3).map((item) => `⭓${item}`);
-            msg += `\n│ ${cmds.join(" ".repeat(Math.max(1, 10 - cmds.join("").length)))}`;
-          }
-
-          msg += `\n╰────────────`;
+      for (const [name, cmd] of commands) {
+        if (!categories[cmd.config.category]) {
+          categories[cmd.config.category] = [];
         }
-      });
-
-      const totalCommands = commands.size;
-      msg += `\nCurrently,the Ru bot💫 has ${totalCommands} Commands 🔰 \n 
- Admin: Rana Babu \n`;
-      msg += ``; // its not decoy so change it if you want 
-
-      await message.reply(msg);
-    } else {
-      const commandName = args[0].toLowerCase();
-      const command = commands.get(commandName) || commands.get(aliases.get(commandName));
-
-      if (!command) {
-        await message.reply(`Command "${commandName}" not found.`);
-      } else {
-        const configCommand = command.config;
-        const roleText = roleTextToString(configCommand.role);
-        const author = configCommand.author || "Unknown";
-
-        const longDescription = configCommand.longDescription ? configCommand.longDescription.en || "No description" : "No description";
-
-        const guideBody = configCommand.guide?.en || "No guide available.";
-        const usage = guideBody.replace(/{p}/g, prefix).replace(/{n}/g, configCommand.name);
-
-        const response = `── NAME ────⭓
-  │ ${configCommand.name}
-  ├── INFO
-  │ Description: ${longDescription}
-  │ Other names: ${configCommand.aliases ? configCommand.aliases.join(", ") : "Do not have"}
-  │ Other names in your group: Do not have
-  │ Version: ${configCommand.version || "1.0"}
-  │ Role: ${roleText}
-  │ Time per command: ${configCommand.countDown || 1}s
-  │ Author: ${author}
-  ├── Usage
-  │ ${usage}
-  ├── Notes
-  │ The content inside <XXXXX> can be changed
-  │ The content inside [a|b|c] is a or b or c
-  ━━━━━━━❖`;
-
-        await message.reply(response);
+        categories[cmd.config.category].push(name);
       }
+
+      for (const [category, cmds] of Object.entries(categories)) {
+        responseMessage += `\n𝙲𝙰𝚃𝙴𝙶𝙾𝚁𝚈: ${category.toUpperCase()}\n`;
+        responseMessage += cmds.map((cmd) => `│ ${cmd}`).join("\n") + "\n";
+        
+      }
+
+      responseMessage += `\n╭───────────────────────➣\n\n𝐂𝐮𝐫𝐫𝐞𝐧𝐭𝐥𝐲, 𝐭𝐡𝐞 𝐛𝐨𝐭 𝐡𝐚𝐬 [${totalCommands}] 𝐜𝐨𝐦𝐦𝐚𝐧𝐝𝐬 𝐭𝐡𝐚𝐭 𝐜𝐚𝐧 𝐛𝐞 𝐮𝐬𝐞𝐝\n𝐔𝐬𝐞 𝐡𝐞𝐥𝐩 ( ᴄᴏᴍᴍᴀɴᴅ ɴᴀᴍᴇ ) 𝐟𝐨𝐫 𝐦𝐨𝐫𝐞 𝐝𝐞𝐭𝐚𝐢𝐥𝐬 𝐨𝐧 𝐚 𝐬𝐩𝐞𝐜𝐢𝐟𝐢𝐜 𝐜𝐨𝐦𝐦𝐚𝐧𝐝\n\n𝐂𝐫𝐞𝐚𝐭𝐨𝐫: 𝐓𝐚𝐬𝐛𝐢𝐮𝐥 𝐈𝐬𝐥𝐚𝐦 𝐑𝐚𝐬𝐢𝐧\n\n╰───────────────────────➣`;
+
+      return api.sendMessage(responseMessage, threadID, messageID);
     }
-  },
+
+    // Show details for a specific command
+    const commandName = args[0].toLowerCase();
+    const command = commands.get(commandName) || commands.get(aliases.get(commandName));
+
+    if (!command) {
+      return api.sendMessage(`❌ Command "${commandName}" not found.`, threadID, messageID);
+    }
+
+    const config = command.config;
+    const guide = config.guide?.en || "No usage guide available.";
+    const description = config.longDescription?.en || "No description available.";
+    const response = `✿──────────────────✿ \n\nㅤㅤ🔍 𝐂𝐨𝐦𝐦𝐚𝐧𝐝 𝐃𝐞𝐭𝐚𝐢𝐥𝐬 🔎\n\n` +
+      `🌟 | 𝐍𝐚𝐦𝐞: ${config.name}\n` +
+      `🔀 | 𝐀𝐥𝐢𝐚𝐬𝐞𝐬: ${config.aliases ? config.aliases.join(", ") : "None"}\n` +
+      `📜 | 𝐃𝐞𝐬𝐜𝐫𝐢𝐩𝐭𝐢𝐨𝐧: ${description}\n` +
+      `🛠️ 𝐔𝐬𝐚𝐠𝐞: ${guide}\n` +
+      `🗂️ | 𝐕𝐞𝐫𝐬𝐢𝐨𝐧: ${config.version || "1.0"}\n` +
+      `✍️ | 𝐀𝐮𝐭𝐡𝐨𝐫: ${config.author || "Unknown"}\n` +
+      `⏳ | 𝐂𝐨𝐨𝐥𝐝𝐨𝐰𝐧: ${config.countDown || 0}s\n` +
+      `🔑 | 𝐑𝐞𝐪𝐮𝐢𝐫𝐞𝐝 𝐑𝐨𝐥𝐞: ${config.role || 0}\n\n✿──────────────────✿`;
+
+    return api.sendMessage(response, threadID, messageID);
+  }
 };
 
-function roleTextToString(roleText) {
-  switch (roleText) {
-    case 0:
-      return "0 (All users)";
-    case 1:
-      return "1 (Group administrators)";
-    case 2:
-      return "2 (Admin bot)";
-    default:
-      return "Unknown role";
-  }
-}
+const wrapper = new GoatWrapper(module.exports);
+wrapper.applyNoPrefix({ allowPrefix: true });

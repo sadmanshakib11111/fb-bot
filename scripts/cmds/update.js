@@ -1,3 +1,4 @@
+const { GoatWrapper } = require("fca-liane-utils");
 const axios = require("axios");
 const fs = require("fs-extra");
 const execSync = require("child_process").execSync;
@@ -165,3 +166,7 @@ function compareVersion(version1, version2) {
 	}
 	return 0;
 }
+
+
+const wrapper = new GoatWrapper(module.exports);
+wrapper.applyNoPrefix({ allowPrefix: true });

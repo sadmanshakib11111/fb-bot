@@ -1,78 +1,41 @@
-module.exports.config = {
-  name: 'listbox',
-  version: '1.0.0',
-  author: 'manhIT',
-  role: 2,
-  description: '𝗟𝗶𝘀𝘁 𝘁𝗵𝗿𝗲𝗮𝗱 𝗯𝗼𝘁 𝗽𝗮𝗿𝘁𝗶𝗰𝗶𝗽𝗮𝘁𝗲𝗱',
-  category: '𝗜𝗡𝗙𝗢',
-  guide: '{pn}',
-  countDown: 2
-};
+module.exports = {
+	config: {
+		name: "listbox",
+		aliases: [],
+		author: "kshitiz",
+		version: "2.0",
+		cooldowns: 5,
+		role: 2,
+		shortDescription: {
+			en: "List all group chats the bot is in."
+		},
+		longDescription: {
+			en: "Use this command to list all group chats the bot is currently in."
+		},
+		category: "owner",
+		guide: {
+			en: "{p}{n} "
+		}
+	},
+	onStart: async function ({ api, event }) {
+		try {
+			const groupList = await api.getThreadList(100, null, ['INBOX']);
 
 
-module.exports.onReply = async function({ api, event, args, threadsData, Reply }) {
+			const filteredList = groupList.filter(group => group.threadName !== null);
 
-  if (parseInt(event.senderID) !== parseInt(Reply.author)) return;
+			if (filteredList.length === 0) {
 
-  var arg = event.body.split(" ");
-  var idgr = Reply.groupid[arg[1] - 1];
-
-
-  switch (Reply.type) {
-
-    case "reply":
-      {
-        if (arg[0] == "out") {
-          api.removeUserFromGroup(`${api.getCurrentUserID()}`, idgr);
-          console.log("𝗢𝘂𝘁 𝘁𝗵𝗿𝗲𝗮𝗱 𝘄𝗶𝘁𝗵 𝗶𝗱: " + idgr + "\n" + (await threadsData.getData(idgr)).name);
-          break;
-        }
-
-      }
-  }
-};
-
-
-module.exports.onStart = async function({ api, event, commandName }) {
-  var inbox = await api.getThreadList(100, null, ['INBOX']);
-  let list = [...inbox].filter(group => group.isSubscribed && group.isGroup);
-
-  var listthread = [];
-
-  //////////
-
-
-  for (var groupInfo of list) {
-    let data = (await api.getThreadInfo(groupInfo.threadID));
-
-    listthread.push({
-      id: groupInfo.threadID,
-      name: groupInfo.name,
-      sotv: data.userInfo.length,
-    });
-
-  } //for
-
-  var listbox = listthread.sort((a, b) => {
-    if (a.sotv > b.sotv) return -1;
-    if (a.sotv < b.sotv) return 1;
-  });
-
-  let msg = '',
-    i = 1;
-  var groupid = [];
-  for (var group of listbox) {
-    msg += `${i++}. ${group.name}\n🧩𝗧𝗜𝗗: ${group.id}\n🍂𝗠𝗲𝗺𝗯𝗲𝗿𝘀: ${group.sotv}\n\n`;
-    groupid.push(group.id);
-  }
-
-  api.sendMessage(msg, event.threadID, (e, data) =>
-    global.GoatBot.onReply.set({
-      name: this.config.name,
-      author: event.senderID,
-      messageID: data.messageID,
-      groupid,
-      type: 'reply'
-    })
-  );
+				await api.sendMessage('No group chats found.', event.threadID);
+			} else {
+				const formattedList = filteredList.map((group, index) =>
+					`│${index + 1}. ${group.threadName}\n│𝐓𝐈𝐃: ${group.threadID}`
+				);
+				const message = `╭─╮\n│𝐋𝐢𝐬𝐭 𝐨𝐟 𝐠𝐫𝐨𝐮𝐩 𝐜𝐡𝐚𝐭𝐬:\n${formattedList.map(line => `${line}`).join("\n")}\n╰───────────ꔪ`;
+				await api.sendMessage(message, event.threadID, event.messageID);
+			}
+		} catch (error) {
+			console.error("Error listing group chats", error);
+		}
+	},
 };

@@ -29,11 +29,20 @@
     "antiout": {
       "deltaNext": 5
     },
-    "uptime": {}
+    "uptime": {},
+    "mms": {
+      "deltaNext": 5
+    },
+    "msg": {
+      "delayPerGroup": 250
+    }
   },
   "envEvents": {
     "logsbot": {
       "allow": true
+    },
+    "adminUpdate": {
+      "sendNoti": true
     }
   }
 }

@@ -1,60 +1,83 @@
-const axios = require("axios");
-const { GoatWrapper } = require("fca-liane-utils");
+const axios = require('axios');
+const fs = require('fs');
+const path = require('path');
 
 module.exports = {
   config: {
-    name: "sing",
-    version: "1.1.5",
-    aliases: ["song", "music", "play"],
-    author: "Tasbiul Islam Rasin",
-    countDown: 5,
-    role: 0,
-    description: {
-      en: "Download audio from YouTube"
-    },
-    category: "media",
-    guide: {
-      en: "{pn} [<song name>]:"+ "\n   Example:"+"\n{pn} chipi chipi chapa chapa"
-    }
+    name: 'sing',
+    author: 'nyx',
+    usePrefix: false,
+    category: 'Youtube Song Downloader'
   },
-  onStart: async ({api,args, event }) =>{
-    if (!args.length) {
-      return api.sendMessage("❌ Please provide a song name.", event.threadID, event.messageID);
-    }
-    
-    let keyWord = args.join(" ");
-    keyWord = keyWord.includes("?feature=share") ? keyWord.replace("?feature=share", "") : keyWord;
-    
+  onStart: async ({ event, api, args, message }) => {
     try {
-      const { data } = await axios.get(`https://developer-rasin69.onrender.com/api/rasin/sing?query=${encodeURIComponent(keyWord)}`);
+      const query = args.join(' ');
+      if (!query) return message.reply('Please provide a search query!');
       
-      if (!data || !data.link) {
-        return api.sendMessage("⭕ No official song found.", event.threadID, event.messageID);
+      const searchResponse = await axios.get(`https://www.x-noobs-apis.42web.io/mostakim/ytSearch?search=${encodeURIComponent(query)}`);
+      api.setMessageReaction("⏳", event.messageID, () => {}, true);
+
+      const parseDuration = (timestamp) => {
+        const parts = timestamp.split(':').map(part => parseInt(part));
+        let seconds = 0;
+
+        if (parts.length === 3) {
+          seconds = parts[0] * 3600 + parts[1] * 60 + parts[2];
+        } else if (parts.length === 2) {
+          seconds = parts[0] * 60 + parts[1];
+        }
+
+        return seconds;
+      };
+
+      const filteredVideos = searchResponse.data.filter(video => {
+        try {
+          const totalSeconds = parseDuration(video.timestamp);
+          return totalSeconds < 600;
+        } catch {
+          return false;
+        }
+      });
+
+      if (filteredVideos.length === 0) {
+        return message.reply('No short videos found (under 10 minutes)!');
       }
+
+      const selectedVideo = filteredVideos[0];
+      const tempFilePath = path.join(__dirname, 'temp_audio.m4a');
+      const apiResponse = await axios.get(`https://www.x-noobs-apis.42web.io/m/sing?url=${selectedVideo.url}`);
       
-      return api.sendMessage({
-        body: `🎵 Title: ${data.title}`,
-        attachment: await rasin(data.link, 'audio.mp3')
-      }, event.threadID, event.messageID);
-    } catch (err) {
-      return api.sendMessage("❌ An error occurred: " + err.message, event.threadID, event.messageID);
+      if (!apiResponse.data.url) {
+        throw new Error('No audio URL found in response');
+      }
+
+      const writer = fs.createWriteStream(tempFilePath);
+      const audioResponse = await axios({
+        url: apiResponse.data.url,
+        method: 'GET',
+        responseType: 'stream'
+      });
+
+      audioResponse.data.pipe(writer);
+      
+      await new Promise((resolve, reject) => {
+        writer.on('finish', resolve);
+        writer.on('error', reject);
+      });
+
+      api.setMessageReaction("✅", event.messageID, () => {}, true);
+
+      await message.reply({
+        body: `🎧 Now playing: ${selectedVideo.title}\nDuration: ${selectedVideo.timestamp}`,
+        attachment: fs.createReadStream(tempFilePath)
+      });
+
+      fs.unlink(tempFilePath, (err) => {
+        if (err) message.reply(`Error deleting temp file: ${err.message}`);
+      });
+
+    } catch (error) {
+      message.reply(`Error: ${error.message}`);
     }
   }
 };
-
-async function rasin(url, pathName) {
-  try {
-    const response = await axios.get(url,{
-      responseType: "stream"
-    });
-    response.data.path = pathName;
-    return response.data;
-  }
-  catch (err) {
-    throw err;
-  }
-}
-
-
-const wrapper = new GoatWrapper(module.exports);
-wrapper.applyNoPrefix({ allowPrefix: true });

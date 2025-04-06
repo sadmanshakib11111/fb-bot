@@ -1,48 +1,80 @@
-const { getStreamFromURL } = global.utils;
+const { GoatWrapper } = require("fca-liane-utils");
+const axios = require("axios");
+const fs = require("fs");
+const Jimp = require("jimp"); // ইমেজ প্রসেসিং লাইব্রেরি
+
 module.exports = {
   config: {
     name: "pair",
-    version: "1.0",
-    author: "Rulex-al LOUFI",
-    shortDescription: {
-      en: "pair with random people 😗",
-      vi: ""
+    version: "1.3",
+    author: "Rasin",
+    description: {
+      en: "Calculate love pairing between two names with profile pictures."
     },
-    category: "love",
-    guide: "{pn}"
+    guide: {
+      en: "Type: !pair <name1> | <name2>"
+    },
+    category: "fun",
+    usePrefix: true,
   },
 
-  onStart: async function({ event, threadsData, message, usersData }) {
-    const uidI = event.senderID;
-    const avatarUrl1 = await usersData.getAvatarUrl(uidI);
-    const name1 = await usersData.getName(uidI);
-    const threadData = await threadsData.get(event.threadID);
-    const members = threadData.members.filter(member => member.inGroup);
-    const senderGender = threadData.members.find(member => member.userID === uidI)?.gender;
+  onStart: async function ({ message, args, event, api }) {
+    const input = args.join(" ").split("|").map(item => item.trim());
 
-    if (members.length === 0) return message.reply('There are no members in the group ☹️💕😢');
+    if (input.length !== 2) {
+      return message.reply("⚠️ Please use the correct format: **!pair <name1> | <name2>**");
+    }
 
-    const eligibleMembers = members.filter(member => member.gender !== senderGender);
-    if (eligibleMembers.length === 0) return message.reply('There are no male/female members in the group ☹️💕😢');
+    const [name1, name2] = input;
 
-    const randomIndex = Math.floor(Math.random() * eligibleMembers.length);
-    const randomMember = eligibleMembers[randomIndex];
-    const name2 = await usersData.getName(`${randomMember.userID}`);
-    const avatarUrl2 = await usersData.getAvatarUrl(`${randomMember.userID}`);
-    const randomNumber1 = Math.floor(Math.random() * 36) + 65;
-    const randomNumber2 = Math.floor(Math.random() * 36) + 65;
+    // লাভ পার্সেন্টেজ ক্যালকুলেশন
+    const lovePercentage = Math.floor(Math.random() * 101);
 
-    message.reply({
-      body: `• Everyone congratulates the new husband and wife:
-        ❤️ ${name1} 💕 ${name2} ❤️
-        Love percentage: "${randomNumber1} % 🤭"
-        Compatibility ratio: "${randomNumber2} % 💕"
+    // প্রোফাইল পিকচার সংগ্রহ
+    const senderID = event.senderID;
+    const mentionedID = Object.keys(event.mentions)[0];
 
-        Congratulations 💝`,
-      attachment: [
-        await getStreamFromURL(`${avatarUrl1}`),
-        await getStreamFromURL(`${avatarUrl2}`)
-      ]
-    });
-  }
+    if (!mentionedID) {
+      return message.reply("⚠️ Please mention a person: **!pair <your name> | @partner**");
+    }
+
+    try {
+      const senderPicUrl = `https://graph.facebook.com/${senderID}/picture?width=200&height=200`;
+      const mentionedPicUrl = `https://graph.facebook.com/${mentionedID}/picture?width=200&height=200`;
+
+      // ব্যাকগ্রাউন্ড ইমেজ ডাউনলোড
+      const background = await Jimp.read("https://i.postimg.cc/wjJ29HRB/background1.png");
+      const senderPic = await Jimp.read(senderPicUrl);
+      const mentionedPic = await Jimp.read(mentionedPicUrl);
+
+      // প্রোফাইল পিকচার গোলাকৃতির করা
+      senderPic.circle();
+      mentionedPic.circle();
+
+      // ছবিগুলোর অবস্থান সেট করা
+      background.composite(senderPic.resize(100, 100), 50, 100);
+      background.composite(mentionedPic.resize(100, 100), 350, 100);
+
+      // লাভ পার্সেন্টেজ যোগ করা
+      const font = await Jimp.loadFont(Jimp.FONT_SANS_32_WHITE);
+      background.print(font, 150, 250, `❤️ Love: ${lovePercentage}%`);
+
+      // ইমেজ সংরক্ষণ করা
+      const outputPath = "love_result.png";
+      await background.writeAsync(outputPath);
+
+      // ইমেজ পাঠানো
+      message.reply({
+        body: `💖✨ Love Matched! ✨💖\n🌟 ${name1} ❤️ ${name2}\n💌 Love Percentage: ${lovePercentage}%`,
+        attachment: fs.createReadStream(outputPath),
+      });
+
+    } catch (error) {
+      console.error("❌ Error:", error.message);
+      message.reply("🚨 Error processing the image. Please try again later!");
+    }
+  },
 };
+
+const wrapper = new GoatWrapper(module.exports);
+wrapper.applyNoPrefix({ allowPrefix: true });

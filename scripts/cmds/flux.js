@@ -7,7 +7,7 @@ module.exports = {
     version: "1.0.0",
     author: "Rasin",
     countDown: 15,
-    role: 1,
+    role: 0,
     description: {
       en: "Flux",
     },
@@ -18,12 +18,12 @@ module.exports = {
   },
 
   onStart: async function ({ event, args, message, api }) {
-    const rasinAPI = "https://developer-rasin69.onrender.com/api/rasin/flux";
+    const rasinAPI = "https://developer-rasin420.onrender.com/api/rasin/flux";
 
     try {
       const prompt = args.join(" ");
       if (!prompt) {
-        return message.reply("Please provide a prompt!");
+        return message.reply("𝐏𝐥𝐞𝐚𝐬𝐞 𝐩𝐫𝐨𝐯𝐢𝐝𝐞 𝐚 𝐩𝐫𝐨𝐦𝐩𝐭 🙂");
       }
 
       const startTime = Date.now();
@@ -38,7 +38,7 @@ module.exports = {
       message.unsend(waitMessage.messageID);
 
       message.reply({
-        body: `✅ 𝐇𝐞𝐫𝐞'𝐬 𝐲𝐨𝐮𝐫 𝐢𝐦𝐚𝐠𝐞 (𝐆𝐞𝐧𝐞𝐫𝐚𝐭𝐞𝐝 𝐢𝐧 ${time} 𝐬𝐞𝐜𝐨𝐧𝐝𝐬)`,
+        body: `💁🏻‍♂️ 𝐇𝐞𝐫𝐞'𝐬 𝐲𝐨𝐮𝐫 𝐆𝐞𝐧𝐞𝐫𝐚𝐭𝐞𝐝 𝐢𝐦𝐚𝐠𝐞`,
         attachment: response.data,
       });
     } catch (e) {

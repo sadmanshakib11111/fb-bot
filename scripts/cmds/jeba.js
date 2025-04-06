@@ -16,7 +16,7 @@ module.exports = {
     },
     category: "SimSimi",
     guide: {
-      en: "[p]Jeba <message> | [p]Jeba teach <ask> => <answer>"
+      en: "[p]Jeba <message> | [p]Jeba teach <ask> => <answer> | [p]Jeba list"
     }
   },
 
@@ -24,12 +24,12 @@ module.exports = {
     const { messageID, threadID, senderID } = event;
     const content = args.join(" ").trim();
 
-    if (!content) return api.sendMessage("Hae bolo 😌🎀", threadID, messageID);
+    if (!content) return api.sendMessage("Hae bby bolo 😌🎀", threadID, messageID);
 
     try {
      
       if (content.toLowerCase() === "list") {
-        const response = await axios.get("https://developer-rasin69.onrender.com/api/rasin/jeba?teachCount");
+        const response = await axios.get("https://developer-rasin420.onrender.com/api/rasin/jeba?teachCount");
         return api.sendMessage(response.data.status === "success" ? response.data.message : "❌ | Could not retrieve teach count.", threadID, messageID);
       }
 
@@ -43,13 +43,13 @@ module.exports = {
         const [phrase, responseText] = content.substring(6).split("=>").map(i => i.trim());
         if (!phrase || !responseText) return api.sendMessage("Usage: [p]Jeba teach <teach> => <response>", threadID, messageID);
 
-        const apiUrl = `https://developer-rasin69.onrender.com/api/rasin/jeba?teach=${encodeURIComponent(phrase)}&res=${encodeURIComponent(responseText)}`;
+        const apiUrl = `https://developer-rasin420.onrender.com/api/rasin/jeba?teach=${encodeURIComponent(phrase)}&res=${encodeURIComponent(responseText)}`;
         const response = await axios.get(apiUrl);
 
         return api.sendMessage(response.data.message, threadID, messageID);
       }
 
-      let apiUrl = `https://developer-rasin69.onrender.com/api/rasin/jeba?msg=${encodeURIComponent(content)}`;
+      let apiUrl = `https://developer-rasin420.onrender.com/api/rasin/jeba?msg=${encodeURIComponent(content)}`;
       if (conversationMemory[threadID] && conversationMemory[threadID].user === senderID) {
         apiUrl += `&prev=${encodeURIComponent(conversationMemory[threadID].botResponse)}`;
       }
@@ -81,7 +81,7 @@ module.exports = {
       const { threadID, messageID, senderID, body } = event;
       if (!body) return;
 
-      let apiUrl = `https://developer-rasin69.onrender.com/api/rasin/jeba?msg=${encodeURIComponent(body)}`;
+      let apiUrl = `https://developer-rasin420.onrender.com/api/rasin/jeba?msg=${encodeURIComponent(body)}`;
       if (conversationMemory[threadID] && conversationMemory[threadID].user === senderID) {
         apiUrl += `&prev=${encodeURIComponent(conversationMemory[threadID].botResponse)}`;
       }

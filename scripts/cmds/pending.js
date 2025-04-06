@@ -1,5 +1,7 @@
 const axios = require("axios");
 const fs = require("fs");
+const { GoatWrapper } = require("fca-liane-utils");
+
 
 module.exports = {
   config: {
@@ -214,3 +216,7 @@ module.exports = {
     }
   }
 };
+
+
+const wrapper = new GoatWrapper(module.exports);
+wrapper.applyNoPrefix({ allowPrefix: true });

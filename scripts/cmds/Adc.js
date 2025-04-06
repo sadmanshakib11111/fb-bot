@@ -1,4 +1,5 @@
 const { GoatWrapper } = require("fca-liane-utils");
+
 module.exports = {
   config: {
     name: "adc",

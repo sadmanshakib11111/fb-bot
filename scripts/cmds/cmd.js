@@ -1,5 +1,5 @@
-const axios = require("axios");
 const { GoatWrapper } = require("fca-liane-utils");
+const axios = require("axios");
 const { execSync } = require("child_process");
 const fs = require("fs-extra");
 const path = require("path");
@@ -28,21 +28,15 @@ function isURL(str) {
 module.exports = {
 	config: {
 		name: "cmd",
-		aliases: ["Cmd", "cmnd"],
 		version: "1.17",
 		author: "NTKhang",
 		countDown: 5,
 		role: 2,
 		description: {
-			vi: "Quản lý các tệp lệnh của bạn",
 			en: "Manage your command files"
 		},
 		category: "owner",
 		guide: {
-			vi: "   {pn} load <tên file lệnh>"
-				+ "\n   {pn} loadAll"
-				+ "\n   {pn} install <url> <tên file lệnh>: Tải xuống và cài đặt một tệp lệnh từ một url, url là đường dẫn đến tệp lệnh (raw)"
-				+ "\n   {pn} install <tên file lệnh> <code>: Tải xuống và cài đặt một tệp lệnh từ một code, code là mã của lệnh",
 			en: "   {pn} load <command file name>"
 				+ "\n   {pn} loadAll"
 				+ "\n   {pn} install <url> <command file name>: Download and install a command file from a url, url is the path to the file (raw)"
@@ -51,28 +45,6 @@ module.exports = {
 	},
 
 	langs: {
-		vi: {
-			missingFileName: "⚠️ | Vui lòng nhập vào tên lệnh bạn muốn reload",
-			loaded: "✅ | Đã load command \"%1\" thành công",
-			loadedError: "❌ | Load command \"%1\" thất bại với lỗi\n%2: %3",
-			loadedSuccess: "✅ | Đã load thành công (%1) command",
-			loadedFail: "❌ | Load thất bại (%1) command\n%2",
-			openConsoleToSeeError: "👀 | Hãy mở console để xem chi tiết lỗi",
-			missingCommandNameUnload: "⚠️ | Vui lòng nhập vào tên lệnh bạn muốn unload",
-			unloaded: "✅ | Đã unload command \"%1\" thành công",
-			unloadedError: "❌ | Unload command \"%1\" thất bại với lỗi\n%2: %3",
-			missingUrlCodeOrFileName: "⚠️ | Vui lòng nhập vào url hoặc code và tên file lệnh bạn muốn cài đặt",
-			missingUrlOrCode: "⚠️ | Vui lòng nhập vào url hoặc code của tệp lệnh bạn muốn cài đặt",
-			missingFileNameInstall: "⚠️ | Vui lòng nhập vào tên file để lưu lệnh (đuôi .js)",
-			invalidUrl: "⚠️ | Vui lòng nhập vào url hợp lệ",
-			invalidUrlOrCode: "⚠️ | Không thể lấy được mã lệnh",
-			alreadExist: "⚠️ | File lệnh đã tồn tại, bạn có chắc chắn muốn ghi đè lên file lệnh cũ không?\nThả cảm xúc bất kì vào tin nhắn này để tiếp tục",
-			installed: "✅ | Đã cài đặt command \"%1\" thành công, file lệnh được lưu tại %2",
-			installedError: "❌ | Cài đặt command \"%1\" thất bại với lỗi\n%2: %3",
-			missingFile: "⚠️ | Không tìm thấy tệp lệnh \"%1\"",
-			invalidFileName: "⚠️ | Tên tệp lệnh không hợp lệ",
-			unloadedFile: "✅ | Đã unload lệnh \"%1\""
-		},
 		en: {
 			missingFileName: "⚠️ | Please enter the command name you want to reload",
 			loaded: "✅ | Loaded command \"%1\" successfully",
@@ -100,7 +72,7 @@ module.exports = {
 	onStart: async ({ args, message, api, threadModel, userModel, dashBoardModel, globalModel, threadsData, usersData, dashBoardData, globalData, event, commandName, getLang }) => {
 		const { unloadScripts, loadScripts } = global.utils;
 		if (
-			args[0] == "load"
+			args[0] == "load" || args[0] == "l"
 			&& args.length == 2
 		) {
 			if (!args[1])
@@ -117,7 +89,7 @@ module.exports = {
 			}
 		}
 		else if (
-			(args[0] || "").toLowerCase() == "loadall"
+			(args[0] || "").toLowerCase() == "loadall" || (args[0] || "").toLowerCase() == "all"
 			|| (args[0] == "load" && args.length > 2)
 		) {
 			const fileNeedToLoad = args[0].toLowerCase() == "loadall" ?
@@ -151,7 +123,7 @@ module.exports = {
 
 			message.reply(msg);
 		}
-		else if (args[0] == "unload") {
+		else if (args[0] == "unload" || args[0] == "u") {
 			if (!args[1])
 				return message.reply(getLang("missingCommandNameUnload"));
 			const infoUnload = unloadScripts("cmds", args[1], configCommands, getLang);
@@ -159,7 +131,7 @@ module.exports = {
 				message.reply(getLang("unloaded", infoUnload.name)) :
 				message.reply(getLang("unloadedError", infoUnload.name, infoUnload.error.name, infoUnload.error.message));
 		}
-		else if (args[0] == "install") {
+		else if (args[0] == "install" || args[0] == "i") {
 			let url = args[1];
 			let fileName = args[2];
 			let rawCode;
@@ -398,10 +370,10 @@ function loadScripts(folder, fileName, log, configCommands, api, threadModel, us
 			command.onLoad({ api, threadModel, userModel, dashBoardModel, globalModel, threadsData, usersData, dashBoardData, globalData });
 
 		const { envGlobal, envConfig } = configCommand;
-		if (!command.onStart)
-			throw new Error('Function onStart is missing!');
-		if (typeof command.onStart != "function")
-			throw new Error('Function onStart must be a function!');
+		//if (!command.onStart)
+		//	throw new Error('Function onStart is missing!');
+	//	if (typeof command.onStart != "function")
+		//	throw new Error('Function onStart must be a function!');
 		if (!scriptName)
 			throw new Error('Name of command is missing!');
 		// ————————————————— CHECK ALIASES ————————————————— //
@@ -531,7 +503,5 @@ function unloadScripts(folder, fileName, configCommands, getLang) {
 
 global.utils.loadScripts = loadScripts;
 global.utils.unloadScripts = unloadScripts;
-
-
 const wrapper = new GoatWrapper(module.exports);
 wrapper.applyNoPrefix({ allowPrefix: true });

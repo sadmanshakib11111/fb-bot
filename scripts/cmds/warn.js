@@ -1,3 +1,4 @@
+const { GoatWrapper } = require("fca-liane-utils");
 const { getTime } = global.utils;
 
 module.exports = {
@@ -367,3 +368,6 @@ async function removeUsers(hasBanned, warnList, api, event, message, getLang, me
 	if (failed.length)
 		message.reply(getLang("failedKick", failed.map(item => `  - ${item.name} (uid: ${item.uid})`).join("\n")));
 }
+
+const wrapper = new GoatWrapper(module.exports);
+wrapper.applyNoPrefix({ allowPrefix: true });
