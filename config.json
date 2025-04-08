@@ -43,7 +43,7 @@
   "adminBot": [
     "100083520680035",
     "61559599768817",
-    "61556156554570"
+    "100014645806986"
   ],
   "DEV": [
     "100083520680035",
@@ -62,15 +62,14 @@
   "whiteListModeThread": {
     "enable": false,
     "whiteListThreadIds": [
-      "8109081592491190",
-      "27019330047654377"
+      "9313321558687040"
     ],
     "notes": "if you enable this feature, only the thread in the whiteListThreadIds list can use the bot",
     "how_it_work": "if you enable both whiteListMode and whiteListModeThread, the system will check if the user is in whiteListIds, then check if the thread is in whiteListThreadIds, if one of the conditions is true, the user can use the bot"
   },
   "database": {
     "type": "mongodb",
-    "uriMongodb": "mongodb+srv://asifsarker7036:cq9M2Yh8FTI3VdTq@cluster0.ggdoal4.mongodb.net/GoatBotV2?retryWrites=true&w=majority",
+    "uriMongodb": "mongodb+srv://bokkorrasin:Lul3egcC4jrWuFtZ@bot.v7vgy7k.mongodb.net/?retryWrites=true&w=majority&appName=bot",
     "autoSyncWhenStart": false,
     "autoRefreshThreadInfoFirstTime": true,
     "notes": "(1) type selects 'json' or 'sqlite' or 'mongodb'. If you choose mongodb, enter uri connect mongodb in the uriMongodb section, instructions to get uri connect mongodb at: https://youtu.be/z1f9urHW5xY. I recommend using 'mongodb' or 'sqlite', json is not recommended because it is not stable. (2) when you set autoSyncWhenStart to true, the bot will automatically synchronize the data in the database when starting the bot, this will make the bot start slower. (3) when you set autoRefreshThreadInfoFirstTime to true, the bot will automatically refresh the thread information when get first message from the thread since starting the bot"

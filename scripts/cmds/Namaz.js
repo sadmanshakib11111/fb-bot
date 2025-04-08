@@ -17,7 +17,6 @@ module.exports = {
     const PRAYER_API_URL = "https://developer-rasin420.onrender.com/api/rasin/prayertimes";
 
     try {
-      // Fetch prayer times from API
       const response = await axios.get(PRAYER_API_URL);
       const data = response.data;
 
@@ -30,9 +29,7 @@ module.exports = {
       }
 
       const timings = data.timings;
-      const messageBody = `ㅤㅤㅤ🕌 Prayer Times\n✿──────────────✿\n\nFajr: ${timings.Fajr}\nSunrise: ${timings.Sunrise}\nDhuhr: ${timings.Dhuhr}\nAsr: ${timings.Asr}\nMaghrib: ${timings.Maghrib}\nIsha: ${timings.Isha}\n\n\n✿──────────────✿
-      
-    __Tasbiul Islam Rasin__`;
+      const messageBody = `ㅤㅤ🕌 Prayer Times\n✿──────────────✿\n\n❏ Fajr: ${timings.Fajr}\n❏ Sunrise: ${timings.Sunrise}\n❏ Dhuhr: ${timings.Dhuhr}\n❏ Asr: ${timings.Asr}\n❏ Maghrib: ${timings.Maghrib}\n❏ Isha: ${timings.Isha}`;
 
       api.sendMessage(messageBody, event.threadID, event.messageID);
     } catch (error) {

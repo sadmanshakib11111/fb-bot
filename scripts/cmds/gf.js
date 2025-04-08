@@ -29,7 +29,6 @@ module.exports = {
                
                 api.setMessageReaction("⏳", event.messageID, (err) => {}, true);
 
-                // Fetching data from API
                 const response = await axios.get('https://developer-rasin420.onrender.com/api/rasin/gf');
                 
                 

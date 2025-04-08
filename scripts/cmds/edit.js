@@ -1,6 +1,4 @@
 const axios = require('axios');
-const { GoatWrapper } = require("fca-liane-utils");
-
 const dipto = "https://www.noobs-api.rf.gd/dipto";
 
 module.exports.config = {
@@ -19,21 +17,25 @@ module.exports.config = {
 async function handleEdit(api, event, args, commandName) {
     const url = event.messageReply?.attachments[0]?.url;
     const prompt = args.join(" ") || "What is this";
-
+    
     if (!url) {
         return api.sendMessage("❌ Please reply to an image to edit it.", event.threadID, event.messageID);
     }
 
     try {
+        // Single API call with arraybuffer to handle both cases
         const response = await axios.get(`${dipto}/edit?url=${encodeURIComponent(url)}&prompt=${encodeURIComponent(prompt)}`, {
-            responseType: 'stream',
+            responseType: 'arraybuffer',
             validateStatus: () => true
         });
 
-        // Check if response is image
-        if (response.headers['content-type']?.startsWith('image/')) {
+        // Process response based on content-type
+        const contentType = response.headers['content-type'] || '';
+
+        // Handle image response
+        if (contentType.startsWith('image/')) {
             return api.sendMessage(
-                { attachment: response.data },
+                { attachment: Buffer.from(response.data) },
                 event.threadID,
                 (error, info) => {
                     global.GoatBot.onReply.set(info.messageID, {
@@ -46,28 +48,27 @@ async function handleEdit(api, event, args, commandName) {
                 event.messageID
             );
         }
-
-        // If not image, try to parse as JSON
-        let responseData = '';
-        for await (const chunk of response.data) {
-            responseData += chunk.toString();
-        }
-
-        const jsonData = JSON.parse(responseData);
-        if (jsonData?.response) {
-            return api.sendMessage(
-                jsonData.response,
-                event.threadID,
-                (error, info) => {
-                    global.GoatBot.onReply.set(info.messageID, {
-                        commandName: commandName,
-                        type: "reply",
-                        messageID: info.messageID,
-                        author: event.senderID,
-                    });
-                },
-                event.messageID
-            );
+        
+        // Handle JSON response
+        try {
+            const jsonData = JSON.parse(response.data.toString());
+            if (jsonData?.response) {
+                return api.sendMessage(
+                    jsonData.response,
+                    event.threadID,
+                    (error, info) => {
+                        global.GoatBot.onReply.set(info.messageID, {
+                            commandName: commandName,
+                            type: "reply",
+                            messageID: info.messageID,
+                            author: event.senderID,
+                        });
+                    },
+                    event.messageID
+                );
+            }
+        } catch (e) {
+            console.error("JSON parse error:", e);
         }
 
         return api.sendMessage(
@@ -102,12 +103,22 @@ async function handleEdit(api, event, args, commandName) {
     }
 }
 
+// Rest of the code remains the same...
 module.exports.onStart = async ({ api, event, args }) => {
     if (!event.messageReply) {
         return api.sendMessage(
             "❌ Please reply to an image to edit it.",
             event.threadID,
-            event.messageID);
+            (error, info) => {
+                global.GoatBot.onReply.set(info.messageID, {
+                    commandName: this.config.name,
+                    type: "reply",
+                    messageID: info.messageID,
+                    author: event.senderID,
+                });
+            },
+            event.messageID
+        );
     }
     await handleEdit(api, event, args, this.config.name);
 };
@@ -117,7 +128,3 @@ module.exports.onReply = async function ({ api, event, args }) {
         await handleEdit(api, event, args, this.config.name);
     }
 };
-
-
-const wrapper = new GoatWrapper(module.exports);
-wrapper.applyNoPrefix({ allowPrefix: true });

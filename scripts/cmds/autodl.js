@@ -2,17 +2,17 @@ const axios = require("axios");
 const fs = require("fs");
 const { shortenURL } = global.utils;
 
-const baseApiUrl = "https://developer-rasin420.onrender.com/api/rasin/alldl?url=";
+const baseApiUrl = "https://developer-rasin420.onrender.com/api/rasin/autodl?url=";
 
 module.exports = {
   config: {
     name: "autodl",
-    version: "1.0",
+    version: "1.0.3",
     author: "Rasin",
     countDown: 0,
     role: 0,
     description: {
-      en: "Auto download video from Tiktok, Facebook, Instagram or others!",
+      en: "Auto download video from Tiktok, Facebook, Instagram, and more",
     },
     category: "downloader",
     guide: {

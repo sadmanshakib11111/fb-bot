@@ -5,8 +5,8 @@ const conversationMemory = {};
 
 module.exports = {
   config: {
-    name: "jeba",
-    aliases: ["jeba", "bby"],
+    name: "jeba", // Don't change this name. If you change this name command not work haha!
+    aliases: ["jeba", "bby", "roza", "rose"],
     version: "1.4.0",
     author: "Tasbiul Islam Rasin",
     countDown: 2,
@@ -16,7 +16,7 @@ module.exports = {
     },
     category: "SimSimi",
     guide: {
-      en: "[p]Jeba <message> | [p]Jeba teach <ask> => <answer> | [p]Jeba list"
+      en: "[p]Jeba <message> | [p]Jeba teach <teach> => <response> | [p]Jeba list"
     }
   },
 
@@ -24,21 +24,29 @@ module.exports = {
     const { messageID, threadID, senderID } = event;
     const content = args.join(" ").trim();
 
-    if (!content) return api.sendMessage("Hae bby bolo 😌🎀", threadID, messageID);
+    if (!content) {
+      return api.sendMessage("Hae bby bolo 🫣", threadID, (err, info) => {
+        if (!err) {
+          global.GoatBot.onReply.set(info.messageID, {
+            commandName: "jeba",
+            type: "reply",
+            messageID: info.messageID,
+            author: senderID
+          });
+        }
+      }, messageID);
+    }
 
     try {
-     
       if (content.toLowerCase() === "list") {
         const response = await axios.get("https://developer-rasin420.onrender.com/api/rasin/jeba?teachCount");
         return api.sendMessage(response.data.status === "success" ? response.data.message : "❌ | Could not retrieve teach count.", threadID, messageID);
       }
 
-      
       if (content.toLowerCase() === "teach") {
         return api.sendMessage("✏ 𝐓𝐞𝐚𝐜𝐡:\n\nJeba teach hey => hi\n\n𝐃𝐞𝐯𝐞𝐥𝐨𝐩𝐞𝐝 𝐛𝐲 𝐑𝐚𝐬𝐢𝐧", threadID, messageID);
       }
 
-    
       if (content.startsWith("teach ")) {
         const [phrase, responseText] = content.substring(6).split("=>").map(i => i.trim());
         if (!phrase || !responseText) return api.sendMessage("Usage: [p]Jeba teach <teach> => <response>", threadID, messageID);
@@ -69,7 +77,7 @@ module.exports = {
           });
         }
       }, messageID);
-      
+
     } catch (error) {
       console.error("❌ | Error processing Jeba", error);
       api.sendMessage("❌ | An error occurred while processing the request.", threadID, messageID);
@@ -77,10 +85,11 @@ module.exports = {
   },
 
   onReply: async function ({ api, event, handleReply }) {
-    try {
-      const { threadID, messageID, senderID, body } = event;
-      if (!body) return;
+    const { threadID, messageID, senderID, body } = event;
 
+    if (!body) return;
+
+    try {
       let apiUrl = `https://developer-rasin420.onrender.com/api/rasin/jeba?msg=${encodeURIComponent(body)}`;
       if (conversationMemory[threadID] && conversationMemory[threadID].user === senderID) {
         apiUrl += `&prev=${encodeURIComponent(conversationMemory[threadID].botResponse)}`;
@@ -101,10 +110,9 @@ module.exports = {
           });
         }
       }, messageID);
-
-    } catch (error) {
-      console.error("❌ | Error processing Jeba reply", error);
-      api.sendMessage("❌ | An error occurred while processing the reply.", event.threadID, event.messageID);
+    } catch (err) {
+      console.error("❌ | Error processing Jeba reply:", err);
+      api.sendMessage("❌ | An error occurred while replying.", threadID, messageID);
     }
   }
 };

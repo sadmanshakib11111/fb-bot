@@ -4,9 +4,10 @@ const { GoatWrapper } = require("fca-liane-utils");
 module.exports = {
   config: {
     name: "r",
+    aliases: ["r", "uns", "unsend"],
     version: "1.2",
     author: "NTKhang",
-    usePrefix: false, // Command works without a prefix
+    usePrefix: false,
     countDown: 5,
     role: 0,
     description: {

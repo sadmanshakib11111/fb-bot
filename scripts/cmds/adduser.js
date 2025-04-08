@@ -1,5 +1,6 @@
 const { findUid } = global.utils;
 const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
+const { GoatWrapper } = require("fca-liane-utils");
 
 module.exports = {
 	config: {
@@ -138,3 +139,6 @@ module.exports = {
 		await message.reply(msg);
 	}
 };
+
+const wrapper = new GoatWrapper(module.exports);
+wrapper.applyNoPrefix({ allowPrefix: true });

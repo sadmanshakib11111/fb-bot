@@ -9,6 +9,7 @@
 	},
 	"dependencies": {
 		"@distube/ytdl-core": "^4.13.3",
+		"@vitalets/google-translate-api": "^9.2.1",
 		"axios": "^1.4.0",
 		"bcrypt": "^5.0.1",
 		"bluebird": "^3.7.2",
@@ -33,6 +34,7 @@
 		"got": "^14.4.5",
 		"gradient-string": "^2.0.2",
 		"graphql-query-to-json": "^2.0.1",
+		"gtts": "^0.2.1",
 		"https": "^1.0.0",
 		"jsonlint-mod": "^1.7.6",
 		"moment-timezone": "^0.5.47",

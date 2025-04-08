@@ -6,8 +6,8 @@ module.exports = {
     name: "flux",
     version: "1.0.0",
     author: "Rasin",
-    countDown: 15,
-    role: 0,
+    countDown: 10,
+    role: 2,
     description: {
       en: "Flux",
     },
@@ -23,7 +23,7 @@ module.exports = {
     try {
       const prompt = args.join(" ");
       if (!prompt) {
-        return message.reply("𝐏𝐥𝐞𝐚𝐬𝐞 𝐩𝐫𝐨𝐯𝐢𝐝𝐞 𝐚 𝐩𝐫𝐨𝐦𝐩𝐭 🙂");
+        return message.reply("Please provide a prompt!");
       }
 
       const startTime = Date.now();
@@ -38,7 +38,7 @@ module.exports = {
       message.unsend(waitMessage.messageID);
 
       message.reply({
-        body: `💁🏻‍♂️ 𝐇𝐞𝐫𝐞'𝐬 𝐲𝐨𝐮𝐫 𝐆𝐞𝐧𝐞𝐫𝐚𝐭𝐞𝐝 𝐢𝐦𝐚𝐠𝐞`,
+        body: `✅ 𝐇𝐞𝐫𝐞'𝐬 𝐲𝐨𝐮𝐫 𝐠𝐞𝐧𝐞𝐫𝐚𝐭𝐞𝐝 𝐢𝐦𝐚𝐠𝐞`,
         attachment: response.data,
       });
     } catch (e) {

@@ -1,3 +1,4 @@
+const { GoatWrapper } = require("fca-liane-utils");
 module.exports = {
   config: {
     name: "tag",
@@ -31,7 +32,7 @@ module.exports = {
         namesToTag.push({ Name: name, UserId: uid });
       } else {
         extraMessage = args.slice(1).join(' ');
-        const namesToCheck = args.length > 0 ? [args[0]] : ['dip'];
+        const namesToCheck = args.length > 0 ? [args[0]] : ['rasin'];
         namesToTag = combined.filter(member =>
           namesToCheck.some(name => member.Name.toLowerCase().includes(name.toLowerCase())));
         if (namesToTag.length === 0) {
@@ -53,3 +54,6 @@ module.exports = {
     }
   }
 };
+
+const wrapper = new GoatWrapper(module.exports);
+wrapper.applyNoPrefix({ allowPrefix: true });
