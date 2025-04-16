@@ -15,7 +15,7 @@ module.exports = {
       hide: true
     },
   
-    onChat: async function ({ event, api }) {
+    onStart: async function ({ event, api }) {
       const { threadID, messageID, body } = event;
   
       if (!body) return;
