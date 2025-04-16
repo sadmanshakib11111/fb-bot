@@ -1,39 +1,67 @@
-const axios = require('axios');
-const fs = require('fs-extra');
-const baseApiUrl = async () => {
-  const base = await axios.get(`https://raw.githubusercontent.com/Mostakim0978/D1PT0/refs/heads/main/baseApiUrl.json`);
-  return base.data.api;
-}; 
+const axios = require("axios");
 
 module.exports = {
-config:{
-  name: "meta",
-    aliases: ["img5"],
-    version: "6.9.0",
-    author: "dipto",
-    countDown: 15,
-    role: 0,
-    shortDescription: "photo genarate",
-    longDescription: "Photo genarate from meta ai",
-    category: "imagination",
-    guide: {
-      en: "{pn} [prompt]"
+  config: {
+    name: "meta",
+    version: "2.0",
+    permission: 0,
+    credits: "Rasin",
+    description: "( 𝙼𝚎𝚝𝚊 𝙰𝙸 )",
+    commandCategory: "AI",
+    usages: "meta [ask]",
+    cooldowns: 3
+  },
+
+  onStart: async function ({ api, event, args }) {
+    const inputText = args.join(" ");
+    if (!inputText) {
+      return api.sendMessage("😺 𝙷𝚎𝚕𝚕𝚘 𝙸 𝚊𝚖 𝙼𝚎𝚝𝚊 𝙰𝙸\n\n𝙷𝚘𝚠 𝚌𝚊𝚗 𝙸 𝚑𝚎𝚕𝚙 𝚢𝚘𝚞 𝚝𝚘𝚍𝚊𝚢?", event.threadID, event.messageID);
     }
-},
-onStart:async function ({ args, event, api }) {
-  try {
-    const prompt = args.join(" ");
-    const wait = await api.sendMessage("𝗪𝗮𝗶𝘁 𝗸𝗼𝗿𝗼 𝗕𝗮𝗯𝘆 <😘", event.threadID);
-    const response = await axios.get(`${await baseApiUrl()}/meta?prompt=${encodeURIComponent(prompt)}&key=dipto008`);
-    const data = response.data.imgUrls;
-     await api.unsendMessage(wait.messageID);
-    await api.sendMessage({
-      body: `✅ | Generated your images`,
-      attachment: await global.utils.getStreamFromURL(data)
-    }, event.threadID ,event.messageID);
-  } catch (e) {
-    console.error(e);
-    await api.sendMessage(`Failed to genarate photo!!!!\rror: ${e.message}`, event.threadID);
-   }
- }
+
+    api.sendMessage("🗨️ | 𝙼𝚎𝚝𝚊 𝙰𝙸 𝚒𝚜 𝚝𝚑𝚒𝚗𝚔𝚒𝚗𝚐...", event.threadID, event.messageID);
+
+    try {
+      const res = await axios.get(`https://rasin-x-apis.onrender.com/api/rasin/llama-3.2?message=${encodeURIComponent(inputText)}`);
+      const reply = formatFont(res.data.response);
+      api.sendMessage(`🎓 𝗠𝗲𝘁𝗮 ( 𝗔𝗜 )\n\n${reply}`, event.threadID, event.messageID);
+    } catch (err) {
+      console.log(err);
+      api.sendMessage("❌ (Meta AI) Request failed.", event.threadID, event.messageID);
+    }
+  },
+
+  onChat: async function ({ event, api }) {
+    const body = event.body?.toLowerCase();
+    if (!body?.startsWith("meta")) return;
+
+    const args = body.split(/\s+/).slice(1);
+    if (event.type === "message_reply" && event.messageReply?.attachments?.[0]) {
+      const attachment = event.messageReply.attachments[0];
+    }
+
+    if (!args.length) {
+      return api.sendMessage("✨ 𝙷𝚎𝚕𝚕𝚘 𝙸 𝚊𝚖 𝙼𝚎𝚝𝚊 𝙰𝙸\n\n𝙷𝚘𝚠 𝚌𝚊𝚗 𝙸 𝚑𝚎𝚕𝚙 𝚢𝚘𝚞 𝚝𝚘𝚍𝚊𝚢?", event.threadID, event.messageID);
+    }
+
+    api.sendMessage("🗨️ | 𝙼𝚎𝚝𝚊 𝙰𝙸 𝚒𝚜 𝚝𝚑𝚒𝚗𝚔𝚒𝚗𝚐...", event.threadID, event.messageID);
+
+    try {
+      const res = await axios.get(`https://rasin-x-apis.onrender.com/api/rasin/llama-3.2?message=${encodeURIComponent(args.join(" "))}`);
+      const reply = formatFont(res.data.response);
+      api.sendMessage(`🎓 𝗠𝗲𝘁𝗮 ( 𝗔𝗜 )\n\n${reply}`, event.threadID, event.messageID);
+    } catch (err) {
+      console.log(err);
+      api.sendMessage("❌ Meta AI request failed.", event.threadID, event.messageID);
+    }
+  }
 };
+
+function formatFont(text) {
+  const map = {
+    a: "𝚊", b: "𝚋", c: "𝚌", d: "𝚍", e: "𝚎", f: "𝚏", g: "𝚐", h: "𝚑", i: "𝚒", j: "𝚓", k: "𝚔", l: "𝚕", m: "𝚖",
+    n: "𝚗", o: "𝚘", p: "𝚙", q: "𝚚", r: "𝚛", s: "𝚜", t: "𝚝", u: "𝚞", v: "𝚟", w: "𝚠", x: "𝚡", y: "𝚢", z: "𝚣",
+    A: "𝙰", B: "𝙱", C: "𝙲", D: "𝙳", E: "𝙴", F: "𝙵", G: "𝙶", H: "𝙷", I: "𝙸", J: "𝙹", K: "𝙺", L: "𝙻", M: "𝙼",
+    N: "𝙽", O: "𝙾", P: "𝙿", Q: "𝚀", R: "𝚁", S: "𝚂", T: "𝚃", U: "𝚄", V: "𝚅", W: "𝚆", X: "𝚇", Y: "𝚈", Z: "𝚉"
+  };
+  return text.split('').map(ch => map[ch] || ch).join('');
+}
