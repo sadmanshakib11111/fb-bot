@@ -1,60 +1,69 @@
-const axios = require("axios");
-const { GoatWrapper } = require("fca-liane-utils");
+const axios = require('axios');
+const fs = require('fs');
+const path = require('path');
 
 module.exports = {
   config: {
-    name: "sing",
-    version: "1.1.5",
-    aliases: ["song", "music", "play"],
-    author: "Tasbiul Islam Rasin",
-    countDown: 5,
-    role: 0,
-    description: {
-      en: "Download audio from YouTube"
-    },
-    category: "media",
-    guide: {
-      en: "{pn}sing <song name>"
-    }
+    name: 'sing',
+    author: 'nyx x rasin',
+    usePrefix: false,
+    category: 'Youtube Song Downloader'
   },
-  onStart: async ({api,args, event }) =>{
-    if (!args.length) {
-      return api.sendMessage("❌ Please provide a song name.", event.threadID, event.messageID);
-    }
-    
-    let keyWord = args.join(" ");
-    keyWord = keyWord.includes("?feature=share") ? keyWord.replace("?feature=share", "") : keyWord;
-    
+  onStart: async ({ event, api, args, message }) => {
     try {
-      const { data } = await axios.get(`https://developer-rasin420.onrender.com/api/rasin/sing?query=${encodeURIComponent(keyWord)}`);
-      
-      if (!data || !data.link) {
-        return api.sendMessage("⭕ No official song found.", event.threadID, event.messageID);
-      }
-      
-      return api.sendMessage({
-        body: `🎵 Title: ${data.title}`,
-        attachment: await rasin(data.link, 'audio.mp3')
-      }, event.threadID, event.messageID);
+      const query = args.join(' ');
+      if (!query) return message.reply('Please provide a search query!');
+
+      api.setMessageReaction("⏳", event.messageID, () => {}, true);
+
+      const searchRes = await axios.get(`https://rasin-x-apis.onrender.com/api/rasin/ytsearch?query=${encodeURIComponent(query)}`);
+      const videos = searchRes.data.data;
+
+      const parseDuration = (timestamp) => {
+        const parts = timestamp.split(':').map(part => parseInt(part));
+        if (parts.length === 3) return parts[0] * 3600 + parts[1] * 60 + parts[2];
+        if (parts.length === 2) return parts[0] * 60 + parts[1];
+        return 0;
+      };
+
+      const filtered = videos.filter(video => parseDuration(video.duration) < 600);
+
+      if (filtered.length === 0) return message.reply('No short videos found (under 10 minutes)!');
+
+      const selected = filtered[0];
+      const singApiRes = await axios.get(`https://developer-rasin420.onrender.com/api/rasin/sing?url=${selected.url}`);
+
+      if (!singApiRes.data.link) throw new Error('Audio URL not found in API response.');
+
+      const tempFilePath = path.join(__dirname, 'temp_audio.m4a');
+      const writer = fs.createWriteStream(tempFilePath);
+
+      const audioStream = await axios({
+        url: singApiRes.data.link,
+        method: 'GET',
+        responseType: 'stream'
+      });
+
+      audioStream.data.pipe(writer);
+
+      await new Promise((resolve, reject) => {
+        writer.on('finish', resolve);
+        writer.on('error', reject);
+      });
+
+      api.setMessageReaction("✅", event.messageID, () => {}, true);
+
+      await message.reply({
+        body: `🎧 Now playing: ${selected.title}\nDuration: ${selected.duration}`,
+        attachment: fs.createReadStream(tempFilePath)
+      });
+
+      fs.unlink(tempFilePath, err => {
+        if (err) message.reply(`Error deleting temp file: ${err.message}`);
+      });
+
     } catch (err) {
-      return api.sendMessage("❌ An error occurred: " + err.message, event.threadID, event.messageID);
+      message.reply(`❌ Error: ${err.message}`);
     }
   }
 };
-
-async function rasin(url, pathName) {
-  try {
-    const response = await axios.get(url,{
-      responseType: "stream"
-    });
-    response.data.path = pathName;
-    return response.data;
-  }
-  catch (err) {
-    throw err;
-  }
-}
-
-
-const wrapper = new GoatWrapper(module.exports);
-wrapper.applyNoPrefix({ allowPrefix: true });
