@@ -7,7 +7,7 @@ module.exports = {
     permission: 0,
     credits: "Rasin",
     description: "( 𝙼𝚎𝚝𝚊 𝙰𝙸 )",
-    commandCategory: "AI",
+    category: "AI",
     usages: "meta [ask]",
     cooldowns: 3
   },
