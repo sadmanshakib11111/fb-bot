@@ -7,7 +7,7 @@ module.exports = {
     permission: 0,
     credits: "Rasin",
     description: "( 𝙲𝚑𝚊𝚝𝙶𝙿𝚃 )",
-    commandCategory: "AI",
+    category: "AI",
     usages: "gpt [ask]",
     cooldowns: 3
   },
