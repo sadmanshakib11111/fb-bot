@@ -21,7 +21,7 @@ module.exports = {
     api.sendMessage("🗨️ | 𝙲𝚕𝚊𝚞𝚍𝚎 𝙰𝙸 𝚒𝚜 𝚝𝚑𝚒𝚗𝚔𝚒𝚗𝚐...", event.threadID, event.messageID);
 
     try {
-      const res = await axios.get(`https://rasin-x-apis.onrender.com/api/rasin/gpt4o-plus?message=${encodeURIComponent(inputText)}`);
+      const res = await axios.get(`https://rasin-x-apis.onrender.com/api/rasin/claude?message=${encodeURIComponent(inputText)}`);
       const reply = formatFont(res.data.response);
       api.sendMessage(`🎓 𝗖𝗹𝗮𝘂𝗱𝗲 ( 𝗔𝗜 )\n\n${reply}`, event.threadID, event.messageID);
     } catch (err) {
