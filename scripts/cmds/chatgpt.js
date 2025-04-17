@@ -3,7 +3,7 @@ const axios = require("axios");
 module.exports = {
   config: {
     name: "gpt",
-    version: "3.8",
+    version: "2.0",
     permission: 0,
     credits: "Rasin",
     description: "( 𝙲𝚑𝚊𝚝𝙶𝙿𝚃 )",
