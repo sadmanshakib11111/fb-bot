@@ -5,8 +5,8 @@ const conversationMemory = {};
 
 module.exports = {
   config: {
-    name: "jeba", // Don't change this name. If you change this name command not work haha!
-    aliases: ["jeba", "bby", "roza", "rose"],
+    name: "jeba", // Don't change this name.
+    aliases: ["jeba", "bby", "roza"],
     version: "1.4.0",
     author: "Tasbiul Islam Rasin",
     countDown: 2,
@@ -25,7 +25,7 @@ module.exports = {
     const content = args.join(" ").trim();
 
     if (!content) {
-      return api.sendMessage("Hae bby bolo 🫣", threadID, (err, info) => {
+      return api.sendMessage("Hae bby bolo 🥹🫶🏻", threadID, (err, info) => {
         if (!err) {
           global.GoatBot.onReply.set(info.messageID, {
             commandName: "jeba",
