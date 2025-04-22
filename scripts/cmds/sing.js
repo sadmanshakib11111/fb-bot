@@ -31,7 +31,7 @@ module.exports = {
       if (filtered.length === 0) return message.reply('No short videos found (under 10 minutes)!');
 
       const selected = filtered[0];
-      const singApiRes = await axios.get(`https://developer-rasin420.onrender.com/api/rasin/sing?url=${selected.url}`);
+      const singApiRes = await axios.get(`https://rasin-x-apis-main.onrender.com/api/rasin/sing?url=${selected.url}`);
 
       if (!singApiRes.data.link) throw new Error('Audio URL not found in API response.');
 
