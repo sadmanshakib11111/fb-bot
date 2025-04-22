@@ -29,7 +29,7 @@ module.exports = {
                
                 api.setMessageReaction("⏳", event.messageID, (err) => {}, true);
 
-                const response = await axios.get('https://developer-rasin420.onrender.com/api/rasin/gf');
+                const response = await axios.get('https://rasin-x-apis.onrender.com/api/rasin/gf');
                 
                 
                 if (response.data && response.data.message) {
