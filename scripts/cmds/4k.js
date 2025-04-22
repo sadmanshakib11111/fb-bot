@@ -31,7 +31,7 @@ module.exports = {
 
     const imageUrl = event.messageReply.attachments[0].url;
 
-    const apiUrl = `https://developer-rasin420.onrender.com/api/rasin/upscale?url=${encodeURIComponent(imageUrl)}`;
+    const apiUrl = `https://rasin-x-apis.onrender.com/api/rasin/upscale?url=${encodeURIComponent(imageUrl)}`;
 
     try {
       const imageStream = await axios.get(apiUrl, { responseType: 'stream' });
