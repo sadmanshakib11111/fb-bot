@@ -9,7 +9,7 @@ async function deepseek(api, event, args, message) {
             return message.reply("Ask me anything... 😌");
         }
 
-        const response = await axios.get(`https://developer-rasin420.onrender.com/api/rasin/deepseek?chat=${encodeURIComponent(query)}`);
+        const response = await axios.get(`https://rasin-x-apis.onrender.com/api/rasin/deepseek?chat=${encodeURIComponent(query)}`);
         
         if (response.data && response.data.Message) {
             message.reply(response.data.Message);
