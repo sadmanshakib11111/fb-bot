@@ -14,7 +14,7 @@ module.exports = {
   },
 
   onStart: async function ({ api, event }) {
-    const PRAYER_API_URL = "https://developer-rasin420.onrender.com/api/rasin/prayertimes";
+    const PRAYER_API_URL = "https://rasin-x-apis.onrender.com/api/rasin/prayertimes";
 
     try {
       const response = await axios.get(PRAYER_API_URL);
