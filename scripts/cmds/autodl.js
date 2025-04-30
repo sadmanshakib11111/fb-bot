@@ -2,7 +2,7 @@ const axios = require("axios");
 const fs = require("fs");
 const { shortenURL } = global.utils;
 
-const baseApiUrl = "https://developer-rasin420.onrender.com/api/rasin/autodl?url=";
+const nusu = "https://rasin-x-apis-main.onrender.com/api/rasin/autodl?url=";
 
 module.exports = {
   config: {
@@ -12,7 +12,7 @@ module.exports = {
     countDown: 0,
     role: 0,
     description: {
-      en: "Auto download video from Tiktok, Facebook, Instagram, and more",
+      en: "empty ()",
     },
     category: "downloader",
     guide: {
@@ -33,7 +33,6 @@ module.exports = {
         rasin.startsWith("https://www.instagram.com/") ||
         rasin.startsWith("https://youtu.be/") ||
         rasin.startsWith("https://youtube.com/") ||
-        rasin.startsWith("https://x.com/") ||
         rasin.startsWith("https://twitter.com/") ||
         rasin.startsWith("https://vm.tiktok.com") ||
         rasin.startsWith("https://fb.watch")
@@ -43,7 +42,7 @@ module.exports = {
         const path = __dirname + "/cache/video.mp4";
         
         const videoStream = await axios({
-          url: `${baseApiUrl}${encodeURIComponent(rasin)}`,
+          url: `${nusu}${encodeURIComponent(rasin)}`,
           method: "GET",
           responseType: "stream",
         });
