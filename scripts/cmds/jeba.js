@@ -40,7 +40,7 @@ module.exports = {
     try {
       if (content.toLowerCase() === "list") {
         const response = await axios.get("https://rasin-x-apis-main.onrender.com/api/rasin/jeba?teachCount");
-        return api.sendMessage(response.data.status === "success" ? response.data.message : "❌ | Could not retrieve teach count.", threadID, messageID);
+        return api.sendMessage(response.data.status === "success" ? response.data.message : "❌", threadID, messageID);
       }
 
       if (content.toLowerCase() === "teach") {
