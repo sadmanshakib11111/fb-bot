@@ -6,7 +6,7 @@ const conversationMemory = {};
 module.exports = {
   config: {
     name: "jeba", // Don't change this name.
-    aliases: ["jeba", "bby", "roza"],
+    aliases: ["jeba", "bby", "nusu"],
     version: "1.4.0",
     author: "Tasbiul Islam Rasin",
     countDown: 2,
