@@ -59,7 +59,7 @@ module.exports = {
 
 async function generateEmojimix(emoji1, emoji2) {
   try {
-    const { data: response } = await axios.get("https://developer-rasin420.onrender.com/api/rasin/emojimix", {
+    const { data: response } = await axios.get("https://rasin-x-apis.onrender.com/api/rasin/emojimix", {
       params: {
         emoji1,
         emoji2
