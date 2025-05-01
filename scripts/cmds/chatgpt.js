@@ -22,7 +22,7 @@ module.exports = {
 
     try {
       const res = await axios.get(`https://rasin-x-apis.onrender.com/api/rasin/gpt4o-plus?message=${encodeURIComponent(inputText)}`);
-      const reply = formatFont(res.data.response);
+      const reply = formatFont(res.data.message);
       api.sendMessage(`🎓 𝗖𝗵𝗮𝘁𝗚𝗣𝗧 ( 𝗔𝗜 )\n\n${reply}`, event.threadID, event.messageID);
     } catch (err) {
       console.log(err);
@@ -47,7 +47,7 @@ module.exports = {
 
     try {
       const res = await axios.get(`https://rasin-x-apis.onrender.com/api/rasin/gpt4o-plus?message=${encodeURIComponent(args.join(" "))}`);
-      const reply = formatFont(res.data.response);
+      const reply = formatFont(res.data.message);
       api.sendMessage(`🎓 𝗖𝗵𝗮𝘁𝗚𝗣𝗧 ( 𝗔𝗜 )\n\n${reply}`, event.threadID, event.messageID);
     } catch (err) {
       console.log(err);
