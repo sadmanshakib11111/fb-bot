@@ -21,7 +21,7 @@ module.exports = {
   },
 
   onStart: async function ({ event, args, message, api }) {
-    const rasinAPI = "https://developer-rasin420.onrender.com/api/rasin/flux-lora";
+    const rasinAPI = "https://rasin-x-apis.onrender.com/api/rasin/flux-lora";
 
     try {
       const prompt = args.join(" ");
