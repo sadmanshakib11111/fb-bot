@@ -21,7 +21,7 @@ module.exports = {
     api.sendMessage("🗨️ | 𝙼𝚎𝚝𝚊 𝙰𝙸 𝚒𝚜 𝚝𝚑𝚒𝚗𝚔𝚒𝚗𝚐...", event.threadID, event.messageID);
 
     try {
-      const res = await axios.get(`https://rasin-x-apis.onrender.com/api/rasin/llama-3.2?message=${encodeURIComponent(inputText)}`);
+      const res = await axios.get(`https://rasin-x-apis.onrender.com/api/rasin/llama-4?message=${encodeURIComponent(inputText)}`);
       const reply = formatFont(res.data.response);
       api.sendMessage(`🎓 𝗠𝗲𝘁𝗮 ( 𝗔𝗜 )\n\n${reply}`, event.threadID, event.messageID);
     } catch (err) {
@@ -46,7 +46,7 @@ module.exports = {
     api.sendMessage("🗨️ | 𝙼𝚎𝚝𝚊 𝙰𝙸 𝚒𝚜 𝚝𝚑𝚒𝚗𝚔𝚒𝚗𝚐...", event.threadID, event.messageID);
 
     try {
-      const res = await axios.get(`https://rasin-x-apis.onrender.com/api/rasin/llama-3.2?message=${encodeURIComponent(args.join(" "))}`);
+      const res = await axios.get(`https://rasin-x-apis.onrender.com/api/rasin/llama-4?message=${encodeURIComponent(args.join(" "))}`);
       const reply = formatFont(res.data.response);
       api.sendMessage(`🎓 𝗠𝗲𝘁𝗮 ( 𝗔𝗜 )\n\n${reply}`, event.threadID, event.messageID);
     } catch (err) {
