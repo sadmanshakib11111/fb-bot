@@ -1,130 +1,56 @@
-const axios = require('axios');
-const dipto = "https://www.noobs-api.rf.gd/dipto";
+const axios = require("axios");
 
-module.exports.config = {
+module.exports = {
+  config: {
     name: "edit",
-    version: "6.9",
-    author: "dipto",
-    countDown: 5,
+    aliases: ['editz'],
+    version: "2.0.2",
+    author: "Rasin",
+    countDown: 2,
     role: 0,
-    category: "AI",
-    description: "Edit images using Edit AI",
+    shortDescription: {
+      en: "empty ()"
+    },
+    longDescription: {
+      en: "empty ()"
+    },
+    category: "image",
     guide: {
-        en: "Reply to an image with {pn} [prompt]"
+      en: "empty ()"
     }
-};
+  },
 
-async function handleEdit(api, event, args, commandName) {
-    const url = event.messageReply?.attachments[0]?.url;
-    const prompt = args.join(" ") || "What is this";
-    
-    if (!url) {
-        return api.sendMessage("❌ Please reply to an image to edit it.", event.threadID, event.messageID);
-    }
+  onStart: async function ({ message, event, args, api }) {
+    const prompt = args.join(" ");
+    if (!prompt) return message.reply("𝙿𝚕𝚎𝚊𝚜𝚎 𝚙𝚛𝚘𝚟𝚒𝚍𝚎 𝚊 𝚙𝚛𝚘𝚖𝚙𝚝");
+    if (!event.messageReply || !event.messageReply.attachments || event.messageReply.attachments.length === 0)
+      return message.reply("𝙿𝚕𝚎𝚊𝚜𝚎 𝚛𝚎𝚙𝚕𝚢 𝚊𝚗 𝚒𝚖𝚊𝚐𝚎");
+
+    const attachment = event.messageReply.attachments[0];
+    if (attachment.type !== "photo") return message.reply("𝙿𝚕𝚎𝚊𝚜𝚎 𝚛𝚎𝚙𝚕𝚢 𝚊𝚗 𝚒𝚖𝚊𝚐𝚎");
+
+    api.setMessageReaction("⏳", event.messageID, () => {}, true);
 
     try {
-        // Single API call with arraybuffer to handle both cases
-        const response = await axios.get(`${dipto}/edit?url=${encodeURIComponent(url)}&prompt=${encodeURIComponent(prompt)}`, {
-            responseType: 'arraybuffer',
-            validateStatus: () => true
-        });
+      const imgUrl = attachment.url;
+      const rasin = `https://rasin-x-apis-main.onrender.com/edit?prompt=${encodeURIComponent(prompt)}&url=${encodeURIComponent(imgUrl)}`;
 
-        // Process response based on content-type
-        const contentType = response.headers['content-type'] || '';
+      const res = await axios.get(rasin);
+      const imageUrl = res.data.img_url;
 
-        // Handle image response
-        if (contentType.startsWith('image/')) {
-            return api.sendMessage(
-                { attachment: Buffer.from(response.data) },
-                event.threadID,
-                (error, info) => {
-                    global.GoatBot.onReply.set(info.messageID, {
-                        commandName: commandName,
-                        type: "reply",
-                        messageID: info.messageID,
-                        author: event.senderID,
-                    });
-                },
-                event.messageID
-            );
-        }
-        
-        // Handle JSON response
-        try {
-            const jsonData = JSON.parse(response.data.toString());
-            if (jsonData?.response) {
-                return api.sendMessage(
-                    jsonData.response,
-                    event.threadID,
-                    (error, info) => {
-                        global.GoatBot.onReply.set(info.messageID, {
-                            commandName: commandName,
-                            type: "reply",
-                            messageID: info.messageID,
-                            author: event.senderID,
-                        });
-                    },
-                    event.messageID
-                );
-            }
-        } catch (e) {
-            console.error("JSON parse error:", e);
-        }
+      if (!imageUrl) return message.reply("𝙽𝚘 𝚒𝚖𝚊𝚐𝚎 𝚛𝚎𝚝𝚞𝚛𝚗𝚎𝚍 😐");
 
-        return api.sendMessage(
-            "❌ No valid response from the API",
-            event.threadID,
-            (error, info) => {
-                global.GoatBot.onReply.set(info.messageID, {
-                    commandName: commandName,
-                    type: "reply",
-                    messageID: info.messageID,
-                    author: event.senderID,
-                });
-            },
-            event.messageID
-        );
+      message.reply({
+        body: "",
+        attachment: await global.utils.getStreamFromURL(imageUrl)
+      });
 
-    } catch (error) {
-        console.error("Edit command error:", error);
-        return api.sendMessage(
-            "❌ Failed to process your request. Please try again later.",
-            event.threadID,
-            (error, info) => {
-                global.GoatBot.onReply.set(info.messageID, {
-                    commandName: commandName,
-                    type: "reply",
-                    messageID: info.messageID,
-                    author: event.senderID,
-                });
-            },
-            event.messageID
-        );
+      api.setMessageReaction("🌸", event.messageID, () => {}, true);
+
+    } catch (err) {
+      console.error(err);
+      message.reply("𝙵𝚊𝚒𝚕𝚎𝚍 💔");
+      api.setMessageReaction("❌", event.messageID, () => {}, true);
     }
-}
-
-// Rest of the code remains the same...
-module.exports.onStart = async ({ api, event, args }) => {
-    if (!event.messageReply) {
-        return api.sendMessage(
-            "❌ Please reply to an image to edit it.",
-            event.threadID,
-            (error, info) => {
-                global.GoatBot.onReply.set(info.messageID, {
-                    commandName: this.config.name,
-                    type: "reply",
-                    messageID: info.messageID,
-                    author: event.senderID,
-                });
-            },
-            event.messageID
-        );
-    }
-    await handleEdit(api, event, args, this.config.name);
-};
-
-module.exports.onReply = async function ({ api, event, args }) {
-    if (event.type === "message_reply") {
-        await handleEdit(api, event, args, this.config.name);
-    }
+  }
 };
