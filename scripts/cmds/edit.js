@@ -33,7 +33,7 @@ module.exports = {
 
     try {
       const imgUrl = attachment.url;
-      const rasin = `https://rasin-x-apis-main.onrender.com/edit?prompt=${encodeURIComponent(prompt)}&url=${encodeURIComponent(imgUrl)}`;
+      const rasin = `https://rasin-x-apis.onrender.com/api/rasin/edit?prompt=${encodeURIComponent(prompt)}&url=${encodeURIComponent(imgUrl)}`;
 
       const res = await axios.get(rasin);
       const imageUrl = res.data.img_url;
