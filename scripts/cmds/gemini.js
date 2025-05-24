@@ -21,7 +21,7 @@ module.exports = {
     api.sendMessage("🗨️ | 𝙶𝚎𝚖𝚒𝚗𝚒 ( 𝙿𝚛𝚘 ) 𝚒𝚜 𝚝𝚑𝚒𝚗𝚔𝚒𝚗𝚐...", event.threadID, event.messageID);
 
     try {
-      const res = await axios.get(`https://rasin-x-apis.onrender.com/api/rasin/gemini9?message=${encodeURIComponent(inputText)}`);
+      const res = await axios.get(`https://rasin-x-apis.onrender.com/api/rasin/gemini8?message=${encodeURIComponent(inputText)}`);
       const reply = formatFont(res.data.response);
       api.sendMessage(`🎓 𝗚𝗲𝗺𝗶𝗻𝗶 ( 𝗣𝗿𝗼 )\n\n${reply}`, event.threadID, event.messageID);
     } catch (err) {
@@ -46,7 +46,7 @@ module.exports = {
     api.sendMessage("🗨️ | 𝙶𝚎𝚖𝚒𝚗𝚒 ( 𝙿𝚛𝚘 ) 𝚒𝚜 𝚝𝚑𝚒𝚗𝚔𝚒𝚗𝚐...", event.threadID, event.messageID);
 
     try {
-      const res = await axios.get(`https://rasin-x-apis.onrender.com/api/rasin/gemini9?message=${encodeURIComponent(args.join(" "))}`);
+      const res = await axios.get(`https://rasin-x-apis.onrender.com/api/rasin/gemini8?message=${encodeURIComponent(args.join(" "))}`);
       const reply = formatFont(res.data.response);
       api.sendMessage(`🎓 𝗚𝗲𝗺𝗶𝗻𝗶 ( 𝗣𝗿𝗼 )\n\n${reply}`, event.threadID, event.messageID);
     } catch (err) {
