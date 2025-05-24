@@ -48,25 +48,33 @@ module.exports = {
       }
 
       if (content.startsWith("teach ")) {
-        const [phrase, responseText] = content.substring(6).split("=>").map(i => i.trim());
-        if (!phrase || !responseText) return api.sendMessage("Usage: [p]Jeba teach <teach> => <reply1, reply2, reply3>", threadID, messageID);
+  const [phrase, responseText] = content.substring(6).split("=>").map(i => i.trim());
+  if (!phrase || !responseText) 
+    return api.sendMessage("Usage: [p]Jeba teach <teach> => <reply1, reply2, reply3>", threadID, messageID);
 
-        const replies = responseText.split(',').map(reply => reply.trim());
-        const apiUrl = `https://rasin-x-apis-main.onrender.com/api/rasin/jeba?ask=${encodeURIComponent(phrase)}&reply=${encodeURIComponent(replies.join(','))}`;
+  const replies = responseText.split(',').map(reply => reply.trim());
+  const teachApiUrl = `https://rasin-x-apis-main.onrender.com/api/rasin/jeba?ask=${encodeURIComponent(phrase)}&reply=${encodeURIComponent(replies.join(','))}`;
 
-        try {
-          const response = await axios.get(apiUrl);
+  try {
+    const response = await axios.get(teachApiUrl);
 
-          if (response.data.ask && response.data.reply) {
-            return api.sendMessage(`𝚂𝚞𝚌𝚌𝚎𝚜𝚜𝚏𝚞𝚕𝚕𝚢 𝚃𝚎𝚊𝚌𝚑\n\n🗨 𝙽𝚎𝚠 𝚃𝚎𝚊𝚌𝚑 [ ${response.data.ask} ]\n💬 𝚁𝚎𝚙𝚕𝚢 [ ${response.data.reply} ]\n\n𝙱𝚢 𝚃𝚊𝚜𝚋𝚒𝚞𝚕 𝙸𝚜𝚕𝚊𝚖 𝚁𝚊𝚜𝚒𝚗 🙆‍♂️`, threadID, messageID);
-          } else {
-            return api.sendMessage("❌ Failed to teach.", threadID, messageID);
-          }
-        } catch (error) {
-          console.error("Error teaching:", error);
-          return api.sendMessage("❌ An error occurred while teaching.", threadID, messageID);
-        }
-      }
+    if (response.data.status === "error") {
+      return api.sendMessage(response.data.message || "❌ Failed to teach.", threadID, messageID);
+    }
+
+    if (response.data.ask && response.data.reply) {
+      return api.sendMessage(`𝚂𝚞𝚌𝚌𝚎𝚜𝚜𝚏𝚞𝚕𝚕𝚢 𝚃𝚎𝚊𝚌𝚑\n\n🗨 𝙽𝚎𝚠 𝚃𝚎𝚊𝚌𝚑 [ ${response.data.ask} ]\n💬 𝚁𝚎𝚙𝚕𝚢 [ ${response.data.reply} ]\n\n𝙱𝚢 𝚃𝚊𝚜𝚋𝚒𝚞𝚕 𝙸𝚜𝚕𝚊𝚖 𝚁𝚊𝚜𝚒𝚗 🙆‍♂️`, threadID, messageID);
+    } else {
+      return api.sendMessage("❌ Failed to teach.", threadID, messageID);
+    }
+  } catch (error) {
+    if (error.response && error.response.data && error.response.data.message) {
+      return api.sendMessage(error.response.data.message, threadID, messageID);
+    }
+    console.error("Error teaching:", error);
+    return api.sendMessage("❌ An error occurred while teaching.", threadID, messageID);
+  }
+}
 
       let apiUrl = `https://rasin-x-apis-main.onrender.com/api/rasin/jeba?msg=${encodeURIComponent(content)}`;
       const key = `${threadID}_${senderID}`;
