@@ -21,7 +21,7 @@ module.exports = {
     api.sendMessage("🗨️ | 𝙲𝚑𝚊𝚝𝙶𝙿𝚃 𝚒𝚜 𝚝𝚑𝚒𝚗𝚔𝚒𝚗𝚐...", event.threadID, event.messageID);
 
     try {
-      const res = await axios.get(`https://rasin-x-apis.onrender.com/api/rasin/gpt4o-plus?message=${encodeURIComponent(inputText)}`);
+      const res = await axios.get(`https://rasin-x-apis.onrender.com/api/rasin/gpt4.1?message=${encodeURIComponent(inputText)}`);
       const reply = formatFont(res.data.message);
       api.sendMessage(`🎓 𝗖𝗵𝗮𝘁𝗚𝗣𝗧 ( 𝗔𝗜 )\n\n${reply}`, event.threadID, event.messageID);
     } catch (err) {
@@ -46,7 +46,7 @@ module.exports = {
     api.sendMessage("🗨️ | 𝙲𝚑𝚊𝚝𝙶𝙿𝚃 𝚒𝚜 𝚝𝚑𝚒𝚗𝚔𝚒𝚗𝚐...", event.threadID, event.messageID);
 
     try {
-      const res = await axios.get(`https://rasin-x-apis.onrender.com/api/rasin/gpt4o-plus?message=${encodeURIComponent(args.join(" "))}`);
+      const res = await axios.get(`https://rasin-x-apis.onrender.com/api/rasin/gpt4.1?message=${encodeURIComponent(args.join(" "))}`);
       const reply = formatFont(res.data.message);
       api.sendMessage(`🎓 𝗖𝗵𝗮𝘁𝗚𝗣𝗧 ( 𝗔𝗜 )\n\n${reply}`, event.threadID, event.messageID);
     } catch (err) {
