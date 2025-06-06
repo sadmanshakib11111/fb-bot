@@ -1,11 +1,10 @@
 const { GoatWrapper } = require("fca-liane-utils");
-
 module.exports = {
   config: {
     name: "help",
-    aliases: ["h"],
+    aliases: ["menu"],
     version: "1.0",
-    author: "Custom Bot",
+    author: "Developer Rasin",
     usePrefix: false,
     countDown: 5,
     role: 0,
@@ -21,10 +20,9 @@ module.exports = {
     }
   },
 
-  onStart: async function ({ api, event, args, message }) {
+  onStart: async function ({ api, event, args }) {
     const { threadID, messageID } = event;
     const { commands, aliases } = global.GoatBot;
-
     const totalCommands = commands.size;
 
     if (args.length === 0) {
@@ -39,17 +37,18 @@ module.exports = {
       }
 
       for (const [category, cmds] of Object.entries(categories)) {
-        responseMessage += `\n𝙲𝙰𝚃𝙴𝙶𝙾𝚁𝚈: ${category.toUpperCase()}\n`;
-        responseMessage += cmds.map((cmd) => `│ ${cmd}`).join("\n") + "\n";
-        
+        responseMessage += `\n╭────────⭓\n`;
+        responseMessage += `\│『 ${category.toUpperCase()} 』\n`;
+        responseMessage += cmds.map((cmd) => `│ 🙂 ${cmd}`).join("\n") + "\n";
+        responseMessage += `╰────────⭓`;
       }
 
-      responseMessage += `\n╭───────────────────────➣\n\n𝐂𝐮𝐫𝐫𝐞𝐧𝐭𝐥𝐲, 𝐭𝐡𝐞 𝐛𝐨𝐭 𝐡𝐚𝐬 [${totalCommands}] 𝐜𝐨𝐦𝐦𝐚𝐧𝐝𝐬 𝐭𝐡𝐚𝐭 𝐜𝐚𝐧 𝐛𝐞 𝐮𝐬𝐞𝐝\n𝐔𝐬𝐞 𝐡𝐞𝐥𝐩 ( ᴄᴏᴍᴍᴀɴᴅ ɴᴀᴍᴇ ) 𝐟𝐨𝐫 𝐦𝐨𝐫𝐞 𝐝𝐞𝐭𝐚𝐢𝐥𝐬 𝐨𝐧 𝐚 𝐬𝐩𝐞𝐜𝐢𝐟𝐢𝐜 𝐜𝐨𝐦𝐦𝐚𝐧𝐝\n\n𝐂𝐫𝐞𝐚𝐭𝐨𝐫: 𝐓𝐚𝐬𝐛𝐢𝐮𝐥 𝐈𝐬𝐥𝐚𝐦 𝐑𝐚𝐬𝐢𝐧\n\n╰───────────────────────➣`;
+      responseMessage += `\n╭───────────────────────➣\n\n𝐂𝐮𝐫𝐫𝐞𝐧𝐭𝐥𝐲, 𝐭𝐡𝐞 𝐛𝐨𝐭 𝐡𝐚𝐬 [${totalCommands}] 𝐜𝐨𝐦𝐦𝐚𝐧𝐝𝐬.\n𝐔𝐬𝐞 'help (command)' 𝐭𝐨 𝐠𝐞𝐭 𝐦𝐨𝐫𝐞 𝐝𝐞𝐭𝐚𝐢𝐥𝐬.\n\n𝐂𝐫𝐞𝐚𝐭𝐨𝐫: 𝐓𝐚𝐬𝐛𝐢𝐮𝐥 𝐈𝐬𝐥𝐚𝐦 𝐑𝐚𝐬𝐢𝐧\n\n╰───────────────────────➣`;
 
       return api.sendMessage(responseMessage, threadID, messageID);
     }
 
-    // Show details for a specific command
+    // Specific command info
     const commandName = args[0].toLowerCase();
     const command = commands.get(commandName) || commands.get(aliases.get(commandName));
 
@@ -60,15 +59,17 @@ module.exports = {
     const config = command.config;
     const guide = config.guide?.en || "No usage guide available.";
     const description = config.longDescription?.en || "No description available.";
-    const response = `✿──────────────────✿ \n\nㅤㅤ🔍 𝐂𝐨𝐦𝐦𝐚𝐧𝐝 𝐃𝐞𝐭𝐚𝐢𝐥𝐬 🔎\n\n` +
+    const response =
+      `✿──────────────────✿ \n\n` +
+      `🔍 𝐂𝐨𝐦𝐦𝐚𝐧𝐝 𝐃𝐞𝐭𝐚𝐢𝐥𝐬 🔎\n\n` +
       `🌟 | 𝐍𝐚𝐦𝐞: ${config.name}\n` +
-      `🔀 | 𝐀𝐥𝐢𝐚𝐬𝐞𝐬: ${config.aliases ? config.aliases.join(", ") : "None"}\n` +
+      `🔀 | 𝐀𝐥𝐢𝐚𝐬𝐞𝐬: ${config.aliases?.join(", ") || "None"}\n` +
       `📜 | 𝐃𝐞𝐬𝐜𝐫𝐢𝐩𝐭𝐢𝐨𝐧: ${description}\n` +
       `🛠️ 𝐔𝐬𝐚𝐠𝐞: ${guide}\n` +
       `🗂️ | 𝐕𝐞𝐫𝐬𝐢𝐨𝐧: ${config.version || "1.0"}\n` +
       `✍️ | 𝐀𝐮𝐭𝐡𝐨𝐫: ${config.author || "Unknown"}\n` +
       `⏳ | 𝐂𝐨𝐨𝐥𝐝𝐨𝐰𝐧: ${config.countDown || 0}s\n` +
-      `🔑 | 𝐑𝐞𝐪𝐮𝐢𝐫𝐞𝐝 𝐑𝐨𝐥𝐞: ${config.role || 0}\n\n✿──────────────────✿`;
+      `🔑 | 𝐑𝐨𝐥𝐞: ${config.role || 0}\n\n✿──────────────────✿`;
 
     return api.sendMessage(response, threadID, messageID);
   }
