@@ -9,7 +9,7 @@ module.exports = {
     countDown: 2,
     role: 0,
     shortDescription: {
-      en: "Edit images"
+      en: "Edit images with AI"
     },
     longDescription: {
       en: "Edit images with AI"
@@ -17,7 +17,9 @@ module.exports = {
     category: "image",
     guide: {
       en: "Usage:\n" +
-           "• {pn} <prompt> - Reply an image\n" +
+           "• {pn} <prompt> - reply an image\n" +
+           "• nothing" +
+           "nothing"
     }
   },
 
@@ -61,6 +63,7 @@ module.exports = {
       return message.reply("𝙾𝚗𝚕𝚢 𝚝𝚑𝚎 𝚞𝚜𝚎𝚛 𝚠𝚑𝚘 𝚒𝚗𝚒𝚝𝚒𝚊𝚝𝚎𝚍 𝚝𝚑𝚒𝚜 𝚌𝚘𝚖𝚖𝚊𝚗𝚍 𝚌𝚊𝚗 𝚛𝚎𝚙𝚕𝚢");
     }
 
+    // Handle continuous editing - when user replies to bot's edited image
     if (type === "continue_edit") {
       const newPrompt = event.body.trim();
       if (!newPrompt) {
@@ -132,6 +135,7 @@ module.exports = {
         attachment: await global.utils.getStreamFromURL(resultImageUrl)
       });
 
+      // Set onReply for continuous editing
       global.GoatBot.onReply.set(sentMsg.messageID, {
         messageID: sentMsg.messageID,
         commandName: this.config.name,
